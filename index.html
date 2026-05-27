@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#1a3d1a" />
+  <title>Madrigal Landscaping — Quote Calculator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark:  #1a3d1a;
+      --green-mid:   #2e6b2e;
+      --green-light: #4a9e4a;
+      --green-pale:  #e8f5e8;
+      --gold:        #c8a855;
+      --gold-light:  #f0d98a;
+      --white:       #ffffff;
+      --gray-100:    #f5f5f5;
+      --gray-200:    #e4e4e4;
+      --gray-400:    #9a9a9a;
+      --gray-700:    #444444;
+      --text:        #1e1e1e;
+      --shadow:      0 4px 24px rgba(0,0,0,0.10);
+      --radius:      14px;
+    }
+
+    html { -webkit-text-size-adjust: 100%; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--gray-100);
+      color: var(--text);
+      min-height: 100vh;
+      /* safe-area insets for notched phones */
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
+      color: var(--white);
+      padding: 20px 20px calc(20px + env(safe-area-inset-top));
+      padding-top: calc(20px + env(safe-area-inset-top));
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .header-text h1 { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.3px; }
+    .header-text p  { font-size: 0.82rem; opacity: 0.75; margin-top: 1px; }
+
+    /* ── Main layout ── */
+    main {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 20px 14px 48px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px 20px;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--green-pale);
+    }
+
+    /* ── Input grid ── */
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 420px) { .input-grid { grid-template-columns: 1fr; } }
+
+    .field { display: flex; flex-direction: column; gap: 5px; }
+
+    label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    label span { font-weight: 400; text-transform: none; color: var(--gray-400); }
+
+    /* font-size 16px prevents iOS auto-zoom on focus */
+    input[type="number"],
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"] {
+      padding: 13px 14px;
+      border: 2px solid var(--gray-200);
+      border-radius: 10px;
+      font-size: 16px;
+      color: var(--text);
+      background: var(--white);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      /* prevent iOS rounding */
+      border-radius: 10px;
+    }
+
+    input:focus {
+      border-color: var(--green-light);
+      box-shadow: 0 0 0 3px rgba(74,158,74,0.18);
+    }
+
+    .hint { font-size: 0.72rem; color: var(--gray-400); }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 52px;           /* large touch target */
+      padding: 0 24px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    .btn:active { transform: scale(0.97); opacity: 0.9; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--green-mid), var(--green-light));
+      color: var(--white);
+      box-shadow: 0 3px 14px rgba(46,107,46,0.35);
+      margin-top: 20px;
+      width: 100%;
+      font-size: 1.05rem;
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--green-dark);
+      box-shadow: 0 3px 12px rgba(200,168,85,0.4);
+      font-size: 1rem;
+    }
+
+    .btn-ghost {
+      background: rgba(255,255,255,0.12);
+      color: var(--white);
+      border: 2px solid rgba(255,255,255,0.4);
+      font-size: 0.95rem;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--green-mid);
+      border: 2px solid var(--green-mid);
+    }
+
+    /* ── Result box ── */
+    .result-box {
+      display: none;
+      background: linear-gradient(150deg, var(--green-dark) 0%, var(--green-mid) 100%);
+      border-radius: var(--radius);
+      padding: 28px 20px 24px;
+      color: var(--white);
+      text-align: center;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .result-box.visible { display: block; }
+
+    .result-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      opacity: 0.7;
+      margin-bottom: 6px;
+    }
+
+    .result-amount {
+      font-size: clamp(2.6rem, 10vw, 3.4rem);
+      font-weight: 800;
+      color: var(--gold-light);
+      line-height: 1;
+      margin-bottom: 14px;
+    }
+
+    /* Breakdown stacks vertically on mobile */
+    .result-breakdown {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.82rem;
+      opacity: 0.72;
+      line-height: 1.5;
+    }
+
+    .result-breakdown strong { opacity: 1; color: var(--gold-light); }
+
+    .result-actions {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    @media (max-width: 340px) { .result-actions { grid-template-columns: 1fr; } }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 1000;
+      /* bottom-sheet on mobile, centered on desktop */
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    @media (min-width: 600px) {
+      .modal-overlay { align-items: center; padding: 16px; }
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--white);
+      width: 100%;
+      max-width: 520px;
+      max-height: 92dvh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      box-shadow: 0 -6px 40px rgba(0,0,0,0.25);
+      /* bottom sheet shape on mobile */
+      border-radius: var(--radius) var(--radius) 0 0;
+      animation: sheetUp 0.28s cubic-bezier(.32,.72,0,1);
+    }
+
+    @media (min-width: 600px) {
+      .modal {
+        border-radius: var(--radius);
+        animation: fadeScale 0.22s ease-out;
+        box-shadow: 0 16px 56px rgba(0,0,0,0.3);
+      }
+    }
+
+    @keyframes sheetUp {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+
+    @keyframes fadeScale {
+      from { opacity: 0; transform: scale(0.95); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    /* drag handle (mobile only) */
+    .modal-handle {
+      width: 40px;
+      height: 4px;
+      background: var(--gray-200);
+      border-radius: 99px;
+      margin: 12px auto 0;
+    }
+
+    @media (min-width: 600px) { .modal-handle { display: none; } }
+
+    .modal-header {
+      background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+      color: var(--white);
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+    }
+
+    .modal-header h2 { font-size: 1.05rem; font-weight: 700; }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--white);
+      font-size: 1.6rem;
+      line-height: 1;
+      cursor: pointer;
+      opacity: 0.75;
+      padding: 4px 6px;
+      min-width: 44px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .modal-close:hover { opacity: 1; }
+
+    .modal-body { padding: 20px 20px 4px; }
+
+    .field-full { grid-column: 1 / -1; }
+
+    .modal-footer {
+      padding: 16px 20px calc(20px + env(safe-area-inset-bottom));
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      position: sticky;
+      bottom: 0;
+      background: var(--white);
+      border-top: 1px solid var(--gray-200);
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      color: var(--gray-400);
+      font-size: 0.75rem;
+      padding: 16px;
+    }
+
+    /* ── Validation ── */
+    input.error { border-color: #e05050 !important; }
+    .error-msg { color: #e05050; font-size: 0.72rem; display: none; }
+    .error-msg.visible { display: block; }
+
+    /* ── Desktop tweaks ── */
+    @media (min-width: 600px) {
+      header { padding: 28px 32px; }
+      .logo-icon { width: 54px; height: 54px; font-size: 26px; }
+      .header-text h1 { font-size: 1.8rem; }
+      main { padding: 36px 20px 60px; }
+      .card { padding: 32px 36px; }
+      .card-title { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════ HEADER ══════════════════ -->
+<header>
+  <div class="logo-icon">🌿</div>
+  <div class="header-text">
+    <h1>Madrigal Landscaping</h1>
+    <p>Instant Quote Calculator</p>
+  </div>
+</header>
+
+<!-- ══════════════════ MAIN ══════════════════ -->
+<main>
+
+  <div class="card">
+    <div class="card-title">Job Details</div>
+    <div class="input-grid">
+      <div class="field">
+        <label for="distance">Distance <span>(miles)</span></label>
+        <input type="number" id="distance" inputmode="decimal" min="0" step="0.1"
+               placeholder="e.g. 20" autocomplete="off" />
+        <div class="hint">Min billing: 15 mi</div>
+        <div class="error-msg" id="distance-err">Enter a valid distance.</div>
+      </div>
+      <div class="field">
+        <label for="jobTime">Job Time <span>(minutes)</span></label>
+        <input type="number" id="jobTime" inputmode="numeric" min="0" step="1"
+               placeholder="e.g. 90" autocomplete="off" />
+        <div class="hint">Min billing: 30 min</div>
+        <div class="error-msg" id="jobTime-err">Enter a valid time.</div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calculateQuote()">Calculate Quote</button>
+  </div>
+
+  <!-- Result -->
+  <div class="result-box" id="resultBox">
+    <div class="result-label">Estimated Quote</div>
+    <div class="result-amount" id="resultAmount">$0.00</div>
+    <div class="result-breakdown" id="resultBreakdown"></div>
+    <div class="result-actions">
+      <button class="btn btn-gold" onclick="openModal()">📄 Export PDF</button>
+      <button class="btn btn-ghost" onclick="resetForm()">New Quote</button>
+    </div>
+  </div>
+
+</main>
+
+<footer>© 2026 Madrigal Landscaping · All rights reserved</footer>
+
+<!-- ══════════════════ MODAL ══════════════════ -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <h2 id="modalTitle">Client Information</h2>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="input-grid">
+        <div class="field">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" placeholder="John"
+                 autocomplete="given-name" autocapitalize="words" />
+          <div class="error-msg" id="firstName-err">Required</div>
+        </div>
+        <div class="field">
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" placeholder="Smith"
+                 autocomplete="family-name" autocapitalize="words" />
+          <div class="error-msg" id="lastName-err">Required</div>
+        </div>
+        <div class="field">
+          <label for="phone">Phone</label>
+          <input type="tel" id="phone" placeholder="(555) 000-0000"
+                 autocomplete="tel" inputmode="tel" />
+          <div class="error-msg" id="phone-err">Required</div>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="john@example.com"
+                 autocomplete="email" inputmode="email" />
+          <div class="error-msg" id="email-err">Required</div>
+        </div>
+        <div class="field field-full">
+          <label for="address">Service Address</label>
+          <input type="text" id="address" placeholder="123 Main St, City, State 00000"
+                 autocomplete="street-address" autocapitalize="words" />
+          <div class="error-msg" id="address-err">Required</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-gold" onclick="exportPDF()">Download PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ SCRIPT ══════════════════ -->
+<script>
+  let quoteData = null;
+
+  function calculateQuote() {
+    const distInput = document.getElementById('distance');
+    const timeInput = document.getElementById('jobTime');
+    const distErr   = document.getElementById('distance-err');
+    const timeErr   = document.getElementById('jobTime-err');
+
+    const rawDist = parseFloat(distInput.value);
+    const rawTime = parseFloat(timeInput.value);
+    let valid = true;
+
+    if (isNaN(rawDist) || rawDist < 0) {
+      distInput.classList.add('error'); distErr.classList.add('visible'); valid = false;
+    } else {
+      distInput.classList.remove('error'); distErr.classList.remove('visible');
+    }
+
+    if (isNaN(rawTime) || rawTime < 0) {
+      timeInput.classList.add('error'); timeErr.classList.add('visible'); valid = false;
+    } else {
+      timeInput.classList.remove('error'); timeErr.classList.remove('visible');
+    }
+
+    if (!valid) return;
+
+    const effectiveDist = Math.max(rawDist, 15);
+    const effectiveTime = Math.max(rawTime, 30);
+    const base          = (effectiveDist * effectiveTime) + 15;
+    const withMarkup    = base * 1.35;
+    const finalQuote    = Math.max(withMarkup, 45);
+
+    quoteData = {
+      rawDist, rawTime, effectiveDist, effectiveTime,
+      base, withMarkup, finalQuote,
+      date: new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' })
+    };
+
+    document.getElementById('resultAmount').textContent = fmt(finalQuote);
+
+    const lines = [
+      rawDist < 15
+        ? `Distance: ${rawDist} mi → billed as <strong>15 mi</strong> (minimum)`
+        : `Distance: <strong>${rawDist} mi</strong>`,
+      rawTime < 30
+        ? `Job time: ${rawTime} min → billed as <strong>30 min</strong> (minimum)`
+        : `Job time: <strong>${rawTime} min</strong>`,
+      `Base: (${effectiveDist} × ${effectiveTime}) + $15 = $${base.toFixed(2)}`,
+      `After 35% markup: $${withMarkup.toFixed(2)}`,
+      withMarkup < 45 ? `<strong>$45.00 minimum applied</strong>` : null,
+    ].filter(Boolean);
+
+    document.getElementById('resultBreakdown').innerHTML =
+      lines.map(l => `<span>${l}</span>`).join('');
+
+    const box = document.getElementById('resultBox');
+    box.classList.add('visible');
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function resetForm() {
+    document.getElementById('distance').value = '';
+    document.getElementById('jobTime').value  = '';
+    document.getElementById('resultBox').classList.remove('visible');
+    quoteData = null;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function openModal() {
+    document.getElementById('modalOverlay').classList.add('open');
+    // slight delay lets the sheet animation finish before focusing
+    setTimeout(() => document.getElementById('firstName').focus(), 320);
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  function exportPDF() {
+    const fields = ['firstName','lastName','phone','email','address'];
+    let valid = true;
+    fields.forEach(id => {
+      const el = document.getElementById(id);
+      const er = document.getElementById(`${id}-err`);
+      if (!el.value.trim()) {
+        el.classList.add('error'); er.classList.add('visible'); valid = false;
+      } else {
+        el.classList.remove('error'); er.classList.remove('visible');
+      }
+    });
+    if (!valid) return;
+
+    generatePDF({
+      firstName: document.getElementById('firstName').value.trim(),
+      lastName:  document.getElementById('lastName').value.trim(),
+      phone:     document.getElementById('phone').value.trim(),
+      email:     document.getElementById('email').value.trim(),
+      address:   document.getElementById('address').value.trim(),
+    });
+    closeModal();
+  }
+
+  function generatePDF(client) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+    const W = doc.internal.pageSize.getWidth();
+    const H = doc.internal.pageSize.getHeight();
+    const M = 56;
+    let y = 0;
+
+    // Header bar
+    doc.setFillColor(26, 61, 26);
+    doc.rect(0, 0, W, 110, 'F');
+
+    doc.setTextColor(200, 168, 85);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(26);
+    doc.text('Madrigal Landscaping', M, 52);
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.text('Professional Landscaping Services', M, 72);
+
+    doc.setFillColor(200, 168, 85);
+    doc.roundedRect(W - M - 80, 28, 80, 30, 6, 6, 'F');
+    doc.setTextColor(26, 61, 26);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text('QUOTE', W - M - 40, 48, { align: 'center' });
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.text(`Date: ${quoteData.date}`, W - M, 76, { align: 'right' });
+
+    y = 140;
+
+    // Client info
+    pdfSection(doc, 'Client Information', M, y, W); y += 30;
+    [['Name', `${client.firstName} ${client.lastName}`],
+     ['Phone', client.phone], ['Email', client.email], ['Address', client.address]]
+    .forEach(([k, v]) => {
+      doc.setFont('helvetica','bold').setFontSize(10).setTextColor(68,68,68);
+      doc.text(k + ':', M, y);
+      doc.setFont('helvetica','normal').setTextColor(30,30,30);
+      doc.text(v, M + 80, y);
+      y += 20;
+    });
+    y += 18;
+
+    // Job details
+    const Q = quoteData;
+    pdfSection(doc, 'Job Details', M, y, W); y += 30;
+    [['Distance Entered',   `${Q.rawDist} miles`],
+     ['Effective Distance', `${Q.effectiveDist} miles${Q.rawDist < 15 ? '  (min 15 mi)' : ''}`],
+     ['Time Entered',       `${Q.rawTime} minutes`],
+     ['Effective Time',     `${Q.effectiveTime} minutes${Q.rawTime < 30 ? '  (min 30 min)' : ''}`]]
+    .forEach(([k, v]) => {
+      doc.setFont('helvetica','bold').setFontSize(10).setTextColor(68,68,68);
+      doc.text(k + ':', M, y);
+      doc.setFont('helvetica','normal').setTextColor(30,30,30);
+      doc.text(v, M + 150, y);
+      y += 20;
+    });
+    y += 18;
+
+    // Pricing
+    pdfSection(doc, 'Pricing Breakdown', M, y, W); y += 30;
+    const rows = [
+      ['Distance × Time', `${Q.effectiveDist} × ${Q.effectiveTime} = ${(Q.effectiveDist*Q.effectiveTime).toFixed(2)}`],
+      ['Service Fee', '+ $15.00'],
+      ['Subtotal', `$${Q.base.toFixed(2)}`],
+      ['35% Markup', `+ $${(Q.withMarkup - Q.base).toFixed(2)}`],
+      ...(Q.withMarkup < 45 ? [['Minimum Applied', '$45.00 minimum enforced']] : []),
+    ];
+    rows.forEach(([k, v]) => {
+      doc.setFont('helvetica','normal').setFontSize(10).setTextColor(68,68,68);
+      doc.text(k + ':', M + 20, y);
+      doc.setTextColor(30,30,30);
+      doc.text(v, W - M, y, { align: 'right' });
+      doc.setDrawColor(220,220,220).line(M+20, y+6, W-M, y+6);
+      y += 24;
+    });
+    y += 8;
+
+    // Total
+    doc.setFillColor(26,61,26).roundedRect(M, y, W-M*2, 56, 8, 8, 'F');
+    doc.setTextColor(200,168,85).setFont('helvetica','bold').setFontSize(13);
+    doc.text('ESTIMATED TOTAL', M + 24, y + 24);
+    doc.setTextColor(240,217,138).setFontSize(22);
+    doc.text(fmt(Q.finalQuote), W-M-24, y+36, { align: 'right' });
+    y += 80;
+
+    // Disclaimer
+    doc.setFillColor(232,245,232).roundedRect(M, y, W-M*2, 52, 6, 6, 'F');
+    doc.setTextColor(46,107,46).setFont('helvetica','italic').setFontSize(9);
+    doc.text('This quote is an estimate and may be adjusted based on site conditions.', W/2, y+18, { align:'center' });
+    doc.text('Contact Madrigal Landscaping to confirm pricing before work begins.', W/2, y+34, { align:'center' });
+
+    // Page footer
+    doc.setFillColor(26,61,26).rect(0, H-36, W, 36, 'F');
+    doc.setTextColor(200,168,85).setFont('helvetica','normal').setFontSize(9);
+    doc.text('© 2026 Madrigal Landscaping  ·  All Rights Reserved', W/2, H-14, { align:'center' });
+
+    doc.save(`Madrigal_Quote_${client.lastName}_${quoteData.date.replace(/,?\s+/g,'_')}.pdf`);
+  }
+
+  function pdfSection(doc, title, x, y, W) {
+    doc.setFillColor(74,158,74).rect(x, y-12, 4, 18, 'F');
+    doc.setFont('helvetica','bold').setFontSize(12).setTextColor(26,61,26);
+    doc.text(title, x+12, y);
+    doc.setDrawColor(200,225,200).line(x, y+6, W-x, y+6);
+  }
+
+  function fmt(n) {
+    return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+</script>
+</body>
+</html>
