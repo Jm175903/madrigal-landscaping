@@ -11,90 +11,423 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --green-dark:  #1a3d1a; --green-mid: #2e6b2e; --green-light: #4a9e4a;
-      --green-pale: #e8f5e8; --gold: #c8a855; --gold-light: #f0d98a;
-      --white: #ffffff; --gray-50: #fafafa; --gray-100: #f3f3f3;
-      --gray-200: #e4e4e4; --gray-400: #9a9a9a; --gray-600: #666666;
-      --gray-700: #444444; --text: #1e1e1e; --shadow: 0 2px 16px rgba(0,0,0,0.09);
-      --radius: 14px; --red: #d94040;
+      --green-dark:  #1a3d1a;
+      --green-mid:   #2e6b2e;
+      --green-light: #4a9e4a;
+      --green-pale:  #e8f5e8;
+      --gold:        #c8a855;
+      --gold-light:  #f0d98a;
+      --white:       #ffffff;
+      --gray-50:     #fafafa;
+      --gray-100:    #f3f3f3;
+      --gray-200:    #e4e4e4;
+      --gray-400:    #9a9a9a;
+      --gray-600:    #666666;
+      --gray-700:    #444444;
+      --text:        #1e1e1e;
+      --shadow:      0 2px 16px rgba(0,0,0,0.09);
+      --radius:      14px;
+      --red:         #d94040;
     }
+
     html { -webkit-text-size-adjust: 100%; }
-    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--gray-100); color: var(--text); min-height: 100vh; padding-bottom: env(safe-area-inset-bottom); }
-    header { background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%); color: var(--white); padding: 18px 20px; padding-top: calc(18px + env(safe-area-inset-top)); display: flex; align-items: center; gap: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.3); position: sticky; top: 0; z-index: 100; }
-    .logo-icon { width: 46px; height: 46px; min-width: 46px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 21px; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--gray-100);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
+      color: var(--white);
+      padding: 18px 20px;
+      padding-top: calc(18px + env(safe-area-inset-top));
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-icon {
+      width: 46px; height: 46px; min-width: 46px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 21px;
+    }
+
     .header-text h1 { font-size: 1.3rem; font-weight: 700; }
-    .header-text p { font-size: 0.78rem; opacity: 0.72; margin-top: 1px; }
-    main { max-width: 640px; margin: 0 auto; padding: 18px 14px 48px; }
-    .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px 18px; margin-bottom: 16px; }
-    .card-title { font-size: 0.72rem; font-weight: 700; color: var(--green-dark); text-transform: uppercase; letter-spacing: 0.9px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--green-pale); }
-    .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .header-text p  { font-size: 0.78rem; opacity: 0.72; margin-top: 1px; }
+
+    /* ── Layout ── */
+    main {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 18px 14px 48px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px 18px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.9px;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--green-pale);
+    }
+
+    /* ── Input grid ── */
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
     @media (max-width: 380px) { .input-grid { grid-template-columns: 1fr; } }
+
     .field { display: flex; flex-direction: column; gap: 5px; }
-    label { font-size: 0.78rem; font-weight: 600; color: var(--gray-700); text-transform: uppercase; letter-spacing: 0.4px; }
+
+    label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
     label span { font-weight: 400; text-transform: none; color: var(--gray-400); }
-    input[type="number"], input[type="text"], input[type="tel"], input[type="email"] { padding: 13px 14px; border: 2px solid var(--gray-200); border-radius: 10px; font-size: 16px; color: var(--text); background: var(--white); transition: border-color 0.2s, box-shadow 0.2s; outline: none; width: 100%; -webkit-appearance: none; appearance: none; }
-    input:focus { border-color: var(--green-light); box-shadow: 0 0 0 3px rgba(74,158,74,0.15); }
+
+    input[type="number"],
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"] {
+      padding: 13px 14px;
+      border: 2px solid var(--gray-200);
+      border-radius: 10px;
+      font-size: 16px;
+      color: var(--text);
+      background: var(--white);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input:focus {
+      border-color: var(--green-light);
+      box-shadow: 0 0 0 3px rgba(74,158,74,0.15);
+    }
+
     input.error { border-color: var(--red) !important; }
-    .error-msg { color: var(--red); font-size: 0.72rem; display: none; }
+    .error-msg  { color: var(--red); font-size: 0.72rem; display: none; }
     .error-msg.visible { display: block; }
+
+    /* ── Services list ── */
     .service-list { display: flex; flex-direction: column; gap: 1px; }
-    .service-row { display: flex; align-items: center; gap: 12px; padding: 13px 12px; border-radius: 10px; cursor: pointer; transition: background 0.15s; -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none; }
-    .service-row:hover { background: var(--gray-50); }
+
+    .service-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    .service-row:hover  { background: var(--gray-50); }
     .service-row.active { background: var(--green-pale); }
-    .service-row.base { background: var(--green-pale); cursor: default; }
-    .service-check { width: 24px; height: 24px; min-width: 24px; border-radius: 6px; border: 2px solid var(--gray-200); display: flex; align-items: center; justify-content: center; font-size: 14px; transition: background 0.15s, border-color 0.15s; background: var(--white); }
-    .service-row.base .service-check, .service-row.active .service-check { background: var(--green-mid); border-color: var(--green-mid); color: var(--white); }
+
+    /* The "base" row is not clickable */
+    .service-row.base {
+      background: var(--green-pale);
+      cursor: default;
+    }
+
+    .service-check {
+      width: 24px; height: 24px; min-width: 24px;
+      border-radius: 6px;
+      border: 2px solid var(--gray-200);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      transition: background 0.15s, border-color 0.15s;
+      background: var(--white);
+    }
+
+    .service-row.base .service-check,
+    .service-row.active .service-check {
+      background: var(--green-mid);
+      border-color: var(--green-mid);
+      color: var(--white);
+    }
+
     .service-check input[type="checkbox"] { display: none; }
-    .service-name { flex: 1; font-size: 0.95rem; font-weight: 600; color: var(--text); }
+
+    .service-name {
+      flex: 1;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
     .service-row.base .service-name { color: var(--green-dark); }
-    .service-price { font-size: 0.88rem; font-weight: 700; color: var(--green-mid); white-space: nowrap; }
+
+    .service-price {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--green-mid);
+      white-space: nowrap;
+    }
+
     .service-row.base .service-price { color: var(--gray-400); font-weight: 400; font-style: italic; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 0 24px; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s, transform 0.1s; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center; justify-content: center;
+      gap: 8px;
+      min-height: 52px;
+      padding: 0 24px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
     .btn:active { transform: scale(0.97); opacity: 0.88; }
-    .btn-primary { background: linear-gradient(135deg, var(--green-mid), var(--green-light)); color: var(--white); box-shadow: 0 3px 14px rgba(46,107,46,0.3); width: 100%; margin-top: 18px; font-size: 1.05rem; }
-    .btn-gold { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--green-dark); box-shadow: 0 3px 12px rgba(200,168,85,0.35); }
-    .btn-outline { background: transparent; color: var(--green-mid); border: 2px solid var(--green-mid); }
-    .result-box { display: none; background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 16px; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--green-mid), var(--green-light));
+      color: var(--white);
+      box-shadow: 0 3px 14px rgba(46,107,46,0.3);
+      width: 100%;
+      margin-top: 18px;
+      font-size: 1.05rem;
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--green-dark);
+      box-shadow: 0 3px 12px rgba(200,168,85,0.35);
+    }
+
+    .btn-ghost {
+      background: rgba(255,255,255,0.14);
+      color: var(--white);
+      border: 2px solid rgba(255,255,255,0.4);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--green-mid);
+      border: 2px solid var(--green-mid);
+    }
+
+    /* ── Result box ── */
+    .result-box {
+      display: none;
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
     .result-box.visible { display: block; }
-    .result-header { background: linear-gradient(135deg, var(--green-dark), var(--green-mid)); color: var(--white); padding: 20px 20px 16px; text-align: center; }
-    .result-header-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1.2px; opacity: 0.7; margin-bottom: 4px; }
-    .result-company { font-size: 1.15rem; font-weight: 700; color: var(--gold-light); }
+
+    .result-header {
+      background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+      color: var(--white);
+      padding: 20px 20px 16px;
+      text-align: center;
+    }
+
+    .result-header-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      opacity: 0.7;
+      margin-bottom: 4px;
+    }
+
+    .result-company {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--gold-light);
+    }
+
     .result-body { padding: 0 18px; }
-    .line-item { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--gray-200); font-size: 0.92rem; }
+
+    /* Services breakdown rows */
+    .line-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--gray-200);
+      font-size: 0.92rem;
+    }
+
     .line-item:last-child { border-bottom: none; }
-    .line-item .li-name { color: var(--gray-700); }
+
+    .line-item .li-name  { color: var(--gray-700); }
     .line-item .li-price { font-weight: 600; color: var(--text); }
-    .line-subtotal { border-top: 2px solid var(--gray-200); padding-top: 10px !important; margin-top: 4px; }
-    .line-subtotal .li-name { font-weight: 700; color: var(--text); }
+
+    .line-subtotal {
+      border-top: 2px solid var(--gray-200);
+      padding-top: 10px !important;
+      margin-top: 4px;
+    }
+
+    .line-subtotal .li-name  { font-weight: 700; color: var(--text); }
     .line-subtotal .li-price { font-weight: 700; }
-    .line-tax .li-name { color: var(--gray-600); font-size: 0.85rem; }
+
+    .line-tax .li-name  { color: var(--gray-600); font-size: 0.85rem; }
     .line-tax .li-price { color: var(--gray-600); font-size: 0.85rem; }
-    .line-total { background: linear-gradient(135deg, var(--green-dark), var(--green-mid)); margin: 0 -18px; padding: 16px 18px !important; border-bottom: none !important; }
-    .line-total .li-name { color: var(--gold-light); font-size: 1rem; font-weight: 700; letter-spacing: 0.5px; }
+
+    .line-total {
+      background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+      margin: 0 -18px;
+      padding: 16px 18px !important;
+      border-bottom: none !important;
+    }
+
+    .line-total .li-name  { color: var(--gold-light); font-size: 1rem; font-weight: 700; letter-spacing: 0.5px; }
     .line-total .li-price { color: var(--gold-light); font-size: 1.45rem; font-weight: 800; }
-    .result-actions { padding: 16px 18px calc(16px + env(safe-area-inset-bottom)); display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: var(--white); border-top: 1px solid var(--gray-100); }
-    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.52); z-index: 1000; align-items: flex-end; justify-content: center; }
-    @media (min-width: 600px) { .modal-overlay { align-items: center; padding: 16px; } }
+
+    .result-actions {
+      padding: 16px 18px calc(16px + env(safe-area-inset-bottom));
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      background: var(--white);
+      border-top: 1px solid var(--gray-100);
+    }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.52);
+      z-index: 1000;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    @media (min-width: 600px) {
+      .modal-overlay { align-items: center; padding: 16px; }
+    }
+
     .modal-overlay.open { display: flex; }
-    .modal { background: var(--white); width: 100%; max-width: 520px; max-height: 92dvh; overflow-y: auto; -webkit-overflow-scrolling: touch; border-radius: var(--radius) var(--radius) 0 0; box-shadow: 0 -6px 40px rgba(0,0,0,0.22); animation: sheetUp 0.27s cubic-bezier(.32,.72,0,1); }
-    @media (min-width: 600px) { .modal { border-radius: var(--radius); animation: fadeScale 0.2s ease-out; } }
-    @keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+    .modal {
+      background: var(--white);
+      width: 100%;
+      max-width: 520px;
+      max-height: 92dvh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: var(--radius) var(--radius) 0 0;
+      box-shadow: 0 -6px 40px rgba(0,0,0,0.22);
+      animation: sheetUp 0.27s cubic-bezier(.32,.72,0,1);
+    }
+
+    @media (min-width: 600px) {
+      .modal { border-radius: var(--radius); animation: fadeScale 0.2s ease-out; }
+    }
+
+    @keyframes sheetUp  { from { transform: translateY(100%); } to { transform: translateY(0); } }
     @keyframes fadeScale { from { opacity:0; transform:scale(.95); } to { opacity:1; transform:scale(1); } }
-    .modal-handle { width: 36px; height: 4px; background: var(--gray-200); border-radius: 99px; margin: 10px auto; }
+
+    .modal-handle {
+      width: 36px; height: 4px;
+      background: var(--gray-200);
+      border-radius: 99px;
+      margin: 10px auto;
+    }
+
     @media (min-width: 600px) { .modal-handle { display: none; } }
-    .modal-header { background: linear-gradient(135deg, var(--green-dark), var(--green-mid)); color: var(--white); padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; }
+
+    .modal-header {
+      background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+      color: var(--white);
+      padding: 16px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0;
+    }
+
     .modal-header h2 { font-size: 1rem; font-weight: 700; }
-    .modal-close { background: none; border: none; color: var(--white); font-size: 1.6rem; line-height: 1; cursor: pointer; opacity: 0.7; min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; }
+
+    .modal-close {
+      background: none; border: none; color: var(--white);
+      font-size: 1.6rem; line-height: 1; cursor: pointer;
+      opacity: 0.7; min-width: 44px; min-height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .modal-close:hover { opacity: 1; }
+
     .modal-body { padding: 20px; }
-    .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .modal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
     @media (max-width: 380px) { .modal-grid { grid-template-columns: 1fr; } }
+
     .field-full { grid-column: 1 / -1; }
-    .modal-footer { padding: 14px 20px calc(20px + env(safe-area-inset-bottom)); display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-top: 1px solid var(--gray-200); background: var(--white); position: sticky; bottom: 0; }
-    footer { text-align: center; color: var(--gray-400); font-size: 0.72rem; padding: 14px; }
+
+    .modal-footer {
+      padding: 14px 20px calc(20px + env(safe-area-inset-bottom));
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      border-top: 1px solid var(--gray-200);
+      background: var(--white);
+      position: sticky; bottom: 0;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--gray-400);
+      font-size: 0.72rem;
+      padding: 14px;
+    }
   </style>
 </head>
 <body>
+
 <header>
   <div class="logo-icon">🌿</div>
   <div class="header-text">
@@ -102,53 +435,126 @@
     <p>Utah's Lawn Care — Quote Calculator</p>
   </div>
 </header>
+
 <main>
+
+  <!-- Job Details -->
   <div class="card">
     <div class="card-title">Job Details</div>
     <div class="input-grid">
       <div class="field">
         <label for="distance">Distance <span>(miles)</span></label>
-        <input type="number" id="distance" inputmode="decimal" min="0" step="0.1" placeholder="e.g. 20" autocomplete="off" />
+        <input type="number" id="distance" inputmode="decimal"
+               min="0" step="0.1" placeholder="e.g. 20" autocomplete="off" />
         <div class="error-msg" id="distance-err">Enter a valid distance.</div>
       </div>
       <div class="field">
         <label for="jobHours">Estimated Hours</label>
-        <input type="number" id="jobHours" inputmode="decimal" min="0" step="0.5" placeholder="e.g. 2" autocomplete="off" />
+        <input type="number" id="jobHours" inputmode="decimal"
+               min="0" step="0.5" placeholder="e.g. 2" autocomplete="off" />
         <div class="error-msg" id="jobHours-err">Enter a valid number of hours.</div>
       </div>
     </div>
   </div>
+
+  <!-- Services -->
   <div class="card">
     <div class="card-title">Services</div>
     <div class="service-list">
-      <div class="service-row base"><div class="service-check">✓</div><div class="service-name">Basic Lawn Care Service</div><div class="service-price">Calculated</div></div>
-      <div class="service-row" id="row-fertilization" onclick="toggleService('fertilization')"><div class="service-check" id="chk-fertilization"><input type="checkbox" id="fertilization" /></div><div class="service-name">Lawn Fertilization</div><div class="service-price">+$40.00</div></div>
-      <div class="service-row" id="row-leaf" onclick="toggleService('leaf')"><div class="service-check" id="chk-leaf"><input type="checkbox" id="leaf" /></div><div class="service-name">Leaf Cleaning</div><div class="service-price">+$20.00</div></div>
-      <div class="service-row" id="row-snow" onclick="toggleService('snow')"><div class="service-check" id="chk-snow"><input type="checkbox" id="snow" /></div><div class="service-name">Snow Removal</div><div class="service-price">+$20.00</div></div>
+
+      <!-- Base service — selected by default, but toggleable -->
+      <div class="service-row active" id="row-lawn" onclick="toggleLawnCare()">
+        <div class="service-check" id="chk-lawn">✓</div>
+        <div class="service-name">Basic Lawn Care Service</div>
+        <div class="service-price">Calculated</div>
+      </div>
+
+      <!-- Add-ons -->
+      <div class="service-row" id="row-fertilization" onclick="toggleService('fertilization')">
+        <div class="service-check" id="chk-fertilization">
+          <input type="checkbox" id="fertilization" />
+        </div>
+        <div class="service-name">Lawn Fertilization</div>
+        <div class="service-price">+$40.00</div>
+      </div>
+
+      <div class="service-row" id="row-leaf" onclick="toggleService('leaf')">
+        <div class="service-check" id="chk-leaf">
+          <input type="checkbox" id="leaf" />
+        </div>
+        <div class="service-name">Leaf Cleaning</div>
+        <div class="service-price">+$20.00</div>
+      </div>
+
+      <div class="service-row" id="row-snow" onclick="toggleService('snow')">
+        <div class="service-check" id="chk-snow">
+          <input type="checkbox" id="snow" />
+        </div>
+        <div class="service-name">Snow Removal</div>
+        <div class="service-price">+$20.00</div>
+      </div>
+
     </div>
     <button class="btn btn-primary" onclick="calculateQuote()">Calculate Quote</button>
   </div>
+
+  <!-- Result -->
   <div class="result-box" id="resultBox">
-    <div class="result-header"><div class="result-header-label">Quote Summary</div><div class="result-company">Madrigal Landscaping</div></div>
+    <div class="result-header">
+      <div class="result-header-label">Quote Summary</div>
+      <div class="result-company">Madrigal Landscaping</div>
+    </div>
     <div class="result-body" id="resultBody"></div>
     <div class="result-actions">
       <button class="btn btn-gold" onclick="openModal()">📄 Export PDF</button>
       <button class="btn btn-outline" onclick="resetForm()">New Quote</button>
     </div>
   </div>
+
 </main>
+
 <footer>© 2026 Madrigal Landscaping · Utah's Lawn Care · All rights reserved</footer>
+
+<!-- Modal: Client Info -->
 <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-handle"></div>
-    <div class="modal-header"><h2 id="modalTitle">Client Information</h2><button class="modal-close" onclick="closeModal()" aria-label="Close">×</button></div>
+    <div class="modal-header">
+      <h2 id="modalTitle">Client Information</h2>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">×</button>
+    </div>
     <div class="modal-body">
       <div class="modal-grid">
-        <div class="field"><label for="firstName">First Name</label><input type="text" id="firstName" placeholder="John" autocomplete="given-name" autocapitalize="words" /><div class="error-msg" id="firstName-err">Required</div></div>
-        <div class="field"><label for="lastName">Last Name</label><input type="text" id="lastName" placeholder="Smith" autocomplete="family-name" autocapitalize="words" /><div class="error-msg" id="lastName-err">Required</div></div>
-        <div class="field"><label for="phone">Phone</label><input type="tel" id="phone" placeholder="(555) 000-0000" autocomplete="tel" inputmode="tel" /><div class="error-msg" id="phone-err">Required</div></div>
-        <div class="field"><label for="email">Email</label><input type="email" id="email" placeholder="john@example.com" autocomplete="email" inputmode="email" /><div class="error-msg" id="email-err">Required</div></div>
-        <div class="field field-full"><label for="address">Service Address</label><input type="text" id="address" placeholder="123 Main St, City, UT 00000" autocomplete="street-address" autocapitalize="words" /><div class="error-msg" id="address-err">Required</div></div>
+        <div class="field">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" placeholder="John"
+                 autocomplete="given-name" autocapitalize="words" />
+          <div class="error-msg" id="firstName-err">Required</div>
+        </div>
+        <div class="field">
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" placeholder="Smith"
+                 autocomplete="family-name" autocapitalize="words" />
+          <div class="error-msg" id="lastName-err">Required</div>
+        </div>
+        <div class="field">
+          <label for="phone">Phone</label>
+          <input type="tel" id="phone" placeholder="(555) 000-0000"
+                 autocomplete="tel" inputmode="tel" />
+          <div class="error-msg" id="phone-err">Required</div>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="john@example.com"
+                 autocomplete="email" inputmode="email" />
+          <div class="error-msg" id="email-err">Required</div>
+        </div>
+        <div class="field field-full">
+          <label for="address">Service Address</label>
+          <input type="text" id="address" placeholder="123 Main St, City, UT 00000"
+                 autocomplete="street-address" autocapitalize="words" />
+          <div class="error-msg" id="address-err">Required</div>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -157,145 +563,333 @@
     </div>
   </div>
 </div>
+
 <script>
-  const TAX_RATE = 0.0685;
+  const TAX_RATE = 0.0685; // Utah combined sales tax (approx.)
   const ADDONS = {
     fertilization: { label: 'Lawn Fertilization', price: 40 },
     leaf:          { label: 'Leaf Cleaning',       price: 20 },
     snow:          { label: 'Snow Removal',         price: 20 },
   };
-  let quoteData = null;
-  let activeAddons = new Set();
 
+  let quoteData        = null;
+  let activeAddons     = new Set();
+  let lawnCareSelected = true;
+
+  function toggleLawnCare() {
+    lawnCareSelected = !lawnCareSelected;
+    document.getElementById('row-lawn').classList.toggle('active', lawnCareSelected);
+    document.getElementById('chk-lawn').textContent = lawnCareSelected ? '✓' : '';
+  }
+
+  // ── Toggle add-on ─────────────────────────────────
   function toggleService(id) {
     if (activeAddons.has(id)) {
       activeAddons.delete(id);
-      document.getElementById('row-'+id).classList.remove('active');
-      document.getElementById('chk-'+id).textContent = '';
+      document.getElementById(`row-${id}`).classList.remove('active');
+      document.getElementById(`chk-${id}`).textContent = '';
     } else {
       activeAddons.add(id);
-      document.getElementById('row-'+id).classList.add('active');
-      document.getElementById('chk-'+id).textContent = '✓';
+      document.getElementById(`row-${id}`).classList.add('active');
+      document.getElementById(`chk-${id}`).textContent = '✓';
     }
   }
 
+  // ── Calculate ──────────────────────────────────────
   function calculateQuote() {
-    const distEl = document.getElementById('distance');
+    const distEl  = document.getElementById('distance');
     const hoursEl = document.getElementById('jobHours');
+
     const rawMiles = parseFloat(distEl.value);
     const rawHours = parseFloat(hoursEl.value);
     let valid = true;
-    if (isNaN(rawMiles) || rawMiles < 0) { distEl.classList.add('error'); document.getElementById('distance-err').classList.add('visible'); valid = false; }
-    else { distEl.classList.remove('error'); document.getElementById('distance-err').classList.remove('visible'); }
-    if (isNaN(rawHours) || rawHours < 0) { hoursEl.classList.add('error'); document.getElementById('jobHours-err').classList.add('visible'); valid = false; }
-    else { hoursEl.classList.remove('error'); document.getElementById('jobHours-err').classList.remove('visible'); }
+
+    if (isNaN(rawMiles) || rawMiles < 0) {
+      distEl.classList.add('error');
+      document.getElementById('distance-err').classList.add('visible');
+      valid = false;
+    } else {
+      distEl.classList.remove('error');
+      document.getElementById('distance-err').classList.remove('visible');
+    }
+
+    if (isNaN(rawHours) || rawHours < 0) {
+      hoursEl.classList.add('error');
+      document.getElementById('jobHours-err').classList.add('visible');
+      valid = false;
+    } else {
+      hoursEl.classList.remove('error');
+      document.getElementById('jobHours-err').classList.remove('visible');
+    }
+
     if (!valid) return;
-    const miles = Math.max(rawMiles, 15);
-    const hours = Math.max(rawHours, 0.5);
-    const base = (20 * hours) + (0.35 * miles);
-    const withMarkup = base * 1.35;
-    const lawnCare = Math.max(withMarkup, 45);
-    const addonLines = []; let addonTotal = 0;
-    activeAddons.forEach(id => { addonLines.push({ label: ADDONS[id].label, price: ADDONS[id].price }); addonTotal += ADDONS[id].price; });
-    const subtotal = lawnCare + addonTotal;
-    const tax = subtotal * TAX_RATE;
-    const total = subtotal + tax;
-    quoteData = { lawnCare, addonLines, subtotal, tax, total, date: new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }) };
-    renderResult(lawnCare, addonLines, subtotal, tax, total);
+
+    // Require at least one service
+    if (!lawnCareSelected && activeAddons.size === 0) {
+      alert('Please select at least one service.');
+      return;
+    }
+
+    // Lawn care (only when selected)
+    let lawnCare = 0;
+    if (lawnCareSelected) {
+      const miles      = Math.max(rawMiles, 15);
+      const hours      = Math.max(rawHours, 0.5);
+      const base       = (20 * hours) + (0.35 * miles);
+      const withMarkup = base * 1.35;
+      lawnCare         = Math.max(withMarkup, 45);
+    }
+
+    // Add-ons
+    const addonLines = [];
+    let addonTotal = 0;
+    activeAddons.forEach(id => {
+      addonLines.push({ label: ADDONS[id].label, price: ADDONS[id].price });
+      addonTotal += ADDONS[id].price;
+    });
+
+    const subtotal  = lawnCare + addonTotal;
+    const tax       = subtotal * TAX_RATE;
+    const total     = subtotal + tax;
+
+    quoteData = {
+      lawnCareSelected, lawnCare, addonLines, subtotal, tax, total,
+      date: new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }),
+    };
+
+    renderResult(lawnCareSelected, lawnCare, addonLines, subtotal, tax, total);
+
     const box = document.getElementById('resultBox');
     box.classList.add('visible');
     box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
-  function renderResult(lawnCare, addonLines, subtotal, tax, total) {
+  // ── Render result body ─────────────────────────────
+  function renderResult(lawnCareSelected, lawnCare, addonLines, subtotal, tax, total) {
     const body = document.getElementById('resultBody');
-    let html = lineItem('Basic Lawn Care Service', lawnCare);
+    let html = '';
+
+    if (lawnCareSelected) html += lineItem('Basic Lawn Care Service', lawnCare);
     addonLines.forEach(a => { html += lineItem(a.label, a.price); });
-    if (addonLines.length > 0) html += lineItem('Subtotal', subtotal, 'line-subtotal');
-    html += lineItem('Utah Sales Tax (6.85%)', tax, 'line-tax');
+
+    // Subtotal only when multiple lines exist
+    const lineCount = (lawnCareSelected ? 1 : 0) + addonLines.length;
+    if (lineCount > 1) {
+      html += lineItem('Subtotal', subtotal, 'line-subtotal');
+    }
+
+    // Tax
+    html += lineItem(`Utah Sales Tax (6.85%)`, tax, 'line-tax');
+
+    // Total
     html += lineItem('TOTAL', total, 'line-total');
+
     body.innerHTML = html;
   }
 
-  function lineItem(name, amount, extraClass='') {
-    return '<div class="line-item '+extraClass+'"><span class="li-name">'+name+'</span><span class="li-price">'+fmt(amount)+'</span></div>';
+  function lineItem(name, amount, extraClass = '') {
+    return `<div class="line-item ${extraClass}">
+      <span class="li-name">${name}</span>
+      <span class="li-price">${fmt(amount)}</span>
+    </div>`;
   }
 
+  // ── Reset ──────────────────────────────────────────
   function resetForm() {
-    document.getElementById('distance').value = '';
-    document.getElementById('jobHours').value = '';
+    document.getElementById('distance').value  = '';
+    document.getElementById('jobHours').value  = '';
     document.getElementById('resultBox').classList.remove('visible');
     quoteData = null;
-    activeAddons.forEach(id => { document.getElementById('row-'+id).classList.remove('active'); document.getElementById('chk-'+id).textContent = ''; });
+    // Reset lawn care to selected
+    lawnCareSelected = true;
+    document.getElementById('row-lawn').classList.add('active');
+    document.getElementById('chk-lawn').textContent = '✓';
+    // Clear add-ons
+    activeAddons.forEach(id => {
+      document.getElementById(`row-${id}`).classList.remove('active');
+      document.getElementById(`chk-${id}`).textContent = '';
+    });
     activeAddons.clear();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function openModal() { document.getElementById('modalOverlay').classList.add('open'); setTimeout(() => document.getElementById('firstName').focus(), 300); }
-  function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
-  function handleOverlayClick(e) { if (e.target === document.getElementById('modalOverlay')) closeModal(); }
+  // ── Modal ──────────────────────────────────────────
+  function openModal() {
+    document.getElementById('modalOverlay').classList.add('open');
+    setTimeout(() => document.getElementById('firstName').focus(), 300);
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
+  // ── PDF Export ─────────────────────────────────────
   function exportPDF() {
     const fields = ['firstName','lastName','phone','email','address'];
     let valid = true;
     fields.forEach(id => {
-      const el = document.getElementById(id), er = document.getElementById(id+'-err');
-      if (!el.value.trim()) { el.classList.add('error'); er.classList.add('visible'); valid = false; }
-      else { el.classList.remove('error'); er.classList.remove('visible'); }
+      const el = document.getElementById(id);
+      const er = document.getElementById(`${id}-err`);
+      if (!el.value.trim()) {
+        el.classList.add('error'); er.classList.add('visible'); valid = false;
+      } else {
+        el.classList.remove('error'); er.classList.remove('visible');
+      }
     });
     if (!valid) return;
-    generatePDF({ firstName: document.getElementById('firstName').value.trim(), lastName: document.getElementById('lastName').value.trim(), phone: document.getElementById('phone').value.trim(), email: document.getElementById('email').value.trim(), address: document.getElementById('address').value.trim() });
+
+    generatePDF({
+      firstName: document.getElementById('firstName').value.trim(),
+      lastName:  document.getElementById('lastName').value.trim(),
+      phone:     document.getElementById('phone').value.trim(),
+      email:     document.getElementById('email').value.trim(),
+      address:   document.getElementById('address').value.trim(),
+    });
     closeModal();
   }
 
+  // ── PDF Generation ─────────────────────────────────
   function generatePDF(client) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'pt', format: 'letter' });
-    const W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight(), M = 52, Q = quoteData;
-    let y = 0;
-    doc.setFillColor(26,61,26).rect(0,0,W,100,'F');
-    doc.setTextColor(200,168,85).setFont('helvetica','bold').setFontSize(24).text('Madrigal Landscaping',M,46);
-    doc.setTextColor(255,255,255).setFont('helvetica','normal').setFontSize(10).text("Utah's Lawn Care",M,64);
-    doc.setFillColor(200,168,85).roundedRect(W-M-82,26,82,28,6,6,'F');
-    doc.setTextColor(26,61,26).setFont('helvetica','bold').setFontSize(13).text('QUOTE',W-M-41,45,{align:'center'});
-    doc.setTextColor(255,255,255).setFont('helvetica','normal').setFontSize(9).text('Date: '+Q.date,W-M,70,{align:'right'});
-    y = 128;
-    pdfSection(doc,'Client Information',M,y,W); y+=26;
-    [['Name',client.firstName+' '+client.lastName],['Phone',client.phone],['Email',client.email],['Address',client.address]].forEach(([k,v]) => {
-      doc.setFont('helvetica','bold').setFontSize(10).setTextColor(80,80,80).text(k+':',M+4,y);
-      doc.setFont('helvetica','normal').setTextColor(30,30,30).text(v,M+80,y); y+=18;
-    }); y+=20;
-    pdfSection(doc,'Services',M,y,W); y+=26;
-    doc.setFillColor(232,245,232).rect(M,y-14,W-M*2,20,'F');
-    doc.setFont('helvetica','bold').setFontSize(9).setTextColor(26,61,26).text('SERVICE',M+8,y);
-    doc.text('AMOUNT',W-M-8,y,{align:'right'}); y+=14;
-    pdfServiceRow(doc,'Basic Lawn Care Service',Q.lawnCare,M,y,W); y+=22;
-    Q.addonLines.forEach(a => { pdfServiceRow(doc,a.label,a.price,M,y,W); y+=22; }); y+=6;
-    const tX = W-M-200;
-    if (Q.addonLines.length > 0) {
-      doc.setDrawColor(200,220,200).line(tX,y,W-M,y); y+=12;
-      doc.setFont('helvetica','normal').setFontSize(10).setTextColor(80,80,80).text('Subtotal',tX,y);
-      doc.setFont('helvetica','bold').setTextColor(30,30,30).text(fmt(Q.subtotal),W-M,y,{align:'right'}); y+=18;
-    }
-    doc.setFont('helvetica','normal').setFontSize(9).setTextColor(100,100,100).text('Utah Sales Tax (6.85%)',tX,y);
-    doc.text(fmt(Q.tax),W-M,y,{align:'right'}); y+=16; y+=4;
-    doc.setFillColor(26,61,26).roundedRect(M,y,W-M*2,50,8,8,'F');
-    doc.setTextColor(200,168,85).setFont('helvetica','bold').setFontSize(12).text('TOTAL',M+20,y+22);
-    doc.setTextColor(240,217,138).setFontSize(22).text(fmt(Q.total),W-M-20,y+34,{align:'right'}); y+=70;
-    doc.setFillColor(245,250,245).roundedRect(M,y,W-M*2,44,6,6,'F');
-    doc.setTextColor(80,120,80).setFont('helvetica','italic').setFontSize(8.5);
-    doc.text('This quote is an estimate. Final pricing may vary based on site conditions.',W/2,y+15,{align:'center'});
-    doc.text('Tax rate shown is approximate. Contact Madrigal Landscaping to confirm.',W/2,y+29,{align:'center'});
-    doc.setFillColor(26,61,26).rect(0,H-32,W,32,'F');
-    doc.setTextColor(200,168,85).setFont('helvetica','normal').setFontSize(8.5);
-    doc.text("© 2026 Madrigal Landscaping  ·  Utah's Lawn Care  ·  All Rights Reserved",W/2,H-12,{align:'center'});
+    const W = doc.internal.pageSize.getWidth();
+    const H = doc.internal.pageSize.getHeight();
+    const M = 52;
+    const Q = quoteData;
+    let y   = 0;
 
-    const fileName = 'Madrigal_Quote_'+client.lastName+'_'+Q.date.replace(/,?\s+/g,'_')+'.pdf';
+    // ── Header ──
+    doc.setFillColor(26, 61, 26);
+    doc.rect(0, 0, W, 100, 'F');
+
+    doc.setTextColor(200, 168, 85);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(24);
+    doc.text('Madrigal Landscaping', M, 46);
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.text("Utah's Lawn Care", M, 64);
+
+    // Quote badge
+    doc.setFillColor(200, 168, 85);
+    doc.roundedRect(W - M - 82, 26, 82, 28, 6, 6, 'F');
+    doc.setTextColor(26, 61, 26);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.text('QUOTE', W - M - 41, 45, { align: 'center' });
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.text(`Date: ${Q.date}`, W - M, 70, { align: 'right' });
+
+    y = 128;
+
+    // ── Client Information ──
+    pdfSection(doc, 'Client Information', M, y, W);
+    y += 26;
+
+    const clientRows = [
+      ['Name',    `${client.firstName} ${client.lastName}`],
+      ['Phone',   client.phone],
+      ['Email',   client.email],
+      ['Address', client.address],
+    ];
+
+    clientRows.forEach(([k, v]) => {
+      doc.setFont('helvetica', 'bold').setFontSize(10).setTextColor(80, 80, 80);
+      doc.text(k + ':', M + 4, y);
+      doc.setFont('helvetica', 'normal').setTextColor(30, 30, 30);
+      doc.text(v, M + 80, y);
+      y += 18;
+    });
+
+    y += 20;
+
+    // ── Services ──
+    pdfSection(doc, 'Services', M, y, W);
+    y += 26;
+
+    // Table header
+    doc.setFillColor(232, 245, 232);
+    doc.rect(M, y - 14, W - M * 2, 20, 'F');
+    doc.setFont('helvetica', 'bold').setFontSize(9).setTextColor(26, 61, 26);
+    doc.text('SERVICE', M + 8, y);
+    doc.text('AMOUNT', W - M - 8, y, { align: 'right' });
+    y += 14;
+
+    // Basic Lawn Care (only if selected)
+    if (Q.lawnCareSelected) { pdfServiceRow(doc, 'Basic Lawn Care Service', Q.lawnCare, M, y, W); y += 22; }
+
+    // Add-ons
+    Q.addonLines.forEach(a => {
+      pdfServiceRow(doc, a.label, a.price, M, y, W);
+      y += 22;
+    });
+
+    y += 6;
+
+    // ── Totals ──
+    const totalsX = W - M - 200;
+    const totalsW = 200;
+
+    // Subtotal (if add-ons)
+    if (Q.addonLines.length > 0) {
+      doc.setDrawColor(200, 220, 200);
+      doc.line(totalsX, y, W - M, y);
+      y += 12;
+      doc.setFont('helvetica', 'normal').setFontSize(10).setTextColor(80, 80, 80);
+      doc.text('Subtotal', totalsX, y);
+      doc.setFont('helvetica', 'bold').setTextColor(30, 30, 30);
+      doc.text(fmt(Q.subtotal), W - M, y, { align: 'right' });
+      y += 18;
+    }
+
+    // Tax
+    doc.setFont('helvetica', 'normal').setFontSize(9).setTextColor(100, 100, 100);
+    doc.text('Utah Sales Tax (6.85%)', totalsX, y);
+    doc.text(fmt(Q.tax), W - M, y, { align: 'right' });
+    y += 16;
+
+    // Total box
+    y += 4;
+    doc.setFillColor(26, 61, 26);
+    doc.roundedRect(M, y, W - M * 2, 50, 8, 8, 'F');
+    doc.setTextColor(200, 168, 85).setFont('helvetica', 'bold').setFontSize(12);
+    doc.text('TOTAL', M + 20, y + 22);
+    doc.setTextColor(240, 217, 138).setFontSize(22);
+    doc.text(fmt(Q.total), W - M - 20, y + 34, { align: 'right' });
+    y += 70;
+
+    // ── Disclaimer ──
+    doc.setFillColor(245, 250, 245);
+    doc.roundedRect(M, y, W - M * 2, 44, 6, 6, 'F');
+    doc.setTextColor(80, 120, 80).setFont('helvetica', 'italic').setFontSize(8.5);
+    doc.text('This quote is an estimate. Final pricing may vary based on site conditions.', W / 2, y + 15, { align: 'center' });
+    doc.text('Tax rate shown is approximate. Contact Madrigal Landscaping to confirm.', W / 2, y + 29, { align: 'center' });
+
+    // ── Page footer ──
+    doc.setFillColor(26, 61, 26).rect(0, H - 32, W, 32, 'F');
+    doc.setTextColor(200, 168, 85).setFont('helvetica', 'normal').setFontSize(8.5);
+    doc.text('© 2026 Madrigal Landscaping  ·  Utah\'s Lawn Care  ·  All Rights Reserved', W / 2, H - 12, { align: 'center' });
+
+    const fileName = `Madrigal_Quote_${client.lastName}_${Q.date.replace(/,?\s+/g, '_')}.pdf`;
     const blob = doc.output('blob');
+
+    // Web Share API — shows native share sheet on iOS/Android (Mail, AirDrop, Save to Files…)
     if (navigator.canShare && navigator.canShare({ files: [new File([blob], fileName, { type: 'application/pdf' })] })) {
-      navigator.share({ title: 'Madrigal Landscaping Quote', files: [new File([blob], fileName, { type: 'application/pdf' })] })
-        .catch(() => triggerDownload(blob, fileName));
+      navigator.share({
+        title: 'Madrigal Landscaping Quote',
+        files: [new File([blob], fileName, { type: 'application/pdf' })],
+      }).catch(() => triggerDownload(blob, fileName));
     } else {
       triggerDownload(blob, fileName);
     }
@@ -303,25 +897,34 @@
 
   function triggerDownload(blob, fileName) {
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = fileName; a.target = '_blank';
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    const a   = document.createElement('a');
+    a.href     = url;
+    a.download = fileName;
+    a.target   = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(url), 10000);
   }
 
-  function pdfSection(doc,title,x,y,W) {
-    doc.setFillColor(74,158,74).rect(x,y-11,3,16,'F');
-    doc.setFont('helvetica','bold').setFontSize(11).setTextColor(26,61,26).text(title,x+10,y);
-    doc.setDrawColor(190,220,190).line(x,y+5,W-x,y+5);
+  function pdfSection(doc, title, x, y, W) {
+    doc.setFillColor(74, 158, 74).rect(x, y - 11, 3, 16, 'F');
+    doc.setFont('helvetica', 'bold').setFontSize(11).setTextColor(26, 61, 26);
+    doc.text(title, x + 10, y);
+    doc.setDrawColor(190, 220, 190).line(x, y + 5, W - x, y + 5);
   }
 
-  function pdfServiceRow(doc,name,price,M,y,W) {
-    doc.setFont('helvetica','normal').setFontSize(10).setTextColor(40,40,40).text(name,M+8,y);
-    doc.setFont('helvetica','bold').text(fmt(price),W-M-8,y,{align:'right'});
-    doc.setDrawColor(225,235,225).line(M+8,y+5,W-M-8,y+5);
+  function pdfServiceRow(doc, name, price, M, y, W) {
+    doc.setFont('helvetica', 'normal').setFontSize(10).setTextColor(40, 40, 40);
+    doc.text(name, M + 8, y);
+    doc.setFont('helvetica', 'bold');
+    doc.text(fmt(price), W - M - 8, y, { align: 'right' });
+    doc.setDrawColor(225, 235, 225).line(M + 8, y + 5, W - M - 8, y + 5);
   }
 
-  function fmt(n) { return '$'+n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+  function fmt(n) {
+    return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
 </script>
 </body>
 </html>
