@@ -42,6 +42,7 @@
       padding-bottom: env(safe-area-inset-bottom);
     }
 
+    /* ── Header ── */
     header {
       background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
       color: var(--white);
@@ -67,12 +68,14 @@
     .header-text h1 { font-size: 1.3rem; font-weight: 700; }
     .header-text p  { font-size: 0.78rem; opacity: 0.72; margin-top: 1px; }
 
+    /* ── Layout ── */
     main {
       max-width: 640px;
       margin: 0 auto;
       padding: 18px 14px 48px;
     }
 
+    /* ── Card ── */
     .card {
       background: var(--white);
       border-radius: var(--radius);
@@ -92,6 +95,7 @@
       border-bottom: 2px solid var(--green-pale);
     }
 
+    /* ── Input grid ── */
     .input-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -138,6 +142,7 @@
     .error-msg  { color: var(--red); font-size: 0.72rem; display: none; }
     .error-msg.visible { display: block; }
 
+    /* ── Services list ── */
     .service-list { display: flex; flex-direction: column; gap: 1px; }
 
     .service-row {
@@ -156,6 +161,7 @@
     .service-row:hover  { background: var(--gray-50); }
     .service-row.active { background: var(--green-pale); }
 
+    /* The "base" row is not clickable */
     .service-row.base {
       background: var(--green-pale);
       cursor: default;
@@ -198,6 +204,7 @@
 
     .service-row.base .service-price { color: var(--gray-400); font-weight: 400; font-style: italic; }
 
+    /* ── Buttons ── */
     .btn {
       display: inline-flex;
       align-items: center; justify-content: center;
@@ -231,12 +238,19 @@
       box-shadow: 0 3px 12px rgba(200,168,85,0.35);
     }
 
+    .btn-ghost {
+      background: rgba(255,255,255,0.14);
+      color: var(--white);
+      border: 2px solid rgba(255,255,255,0.4);
+    }
+
     .btn-outline {
       background: transparent;
       color: var(--green-mid);
       border: 2px solid var(--green-mid);
     }
 
+    /* ── Result box ── */
     .result-box {
       display: none;
       background: var(--white);
@@ -271,6 +285,7 @@
 
     .result-body { padding: 0 18px; }
 
+    /* Services breakdown rows */
     .line-item {
       display: flex;
       justify-content: space-between;
@@ -281,10 +296,16 @@
     }
 
     .line-item:last-child { border-bottom: none; }
+
     .line-item .li-name  { color: var(--gray-700); }
     .line-item .li-price { font-weight: 600; color: var(--text); }
 
-    .line-subtotal { border-top: 2px solid var(--gray-200); padding-top: 10px !important; margin-top: 4px; }
+    .line-subtotal {
+      border-top: 2px solid var(--gray-200);
+      padding-top: 10px !important;
+      margin-top: 4px;
+    }
+
     .line-subtotal .li-name  { font-weight: 700; color: var(--text); }
     .line-subtotal .li-price { font-weight: 700; }
 
@@ -297,11 +318,12 @@
       padding: 16px 18px !important;
       border-bottom: none !important;
     }
+
     .line-total .li-name  { color: var(--gold-light); font-size: 1rem; font-weight: 700; letter-spacing: 0.5px; }
     .line-total .li-price { color: var(--gold-light); font-size: 1.45rem; font-weight: 800; }
 
     .result-actions {
-      padding: 16px 18px;
+      padding: 16px 18px calc(16px + env(safe-area-inset-bottom));
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
@@ -309,6 +331,7 @@
       border-top: 1px solid var(--gray-100);
     }
 
+    /* ── Modal ── */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -319,7 +342,10 @@
       justify-content: center;
     }
 
-    @media (min-width: 600px) { .modal-overlay { align-items: center; padding: 16px; } }
+    @media (min-width: 600px) {
+      .modal-overlay { align-items: center; padding: 16px; }
+    }
+
     .modal-overlay.open { display: flex; }
 
     .modal {
@@ -334,12 +360,20 @@
       animation: sheetUp 0.27s cubic-bezier(.32,.72,0,1);
     }
 
-    @media (min-width: 600px) { .modal { border-radius: var(--radius); animation: fadeScale 0.2s ease-out; } }
+    @media (min-width: 600px) {
+      .modal { border-radius: var(--radius); animation: fadeScale 0.2s ease-out; }
+    }
 
     @keyframes sheetUp  { from { transform: translateY(100%); } to { transform: translateY(0); } }
     @keyframes fadeScale { from { opacity:0; transform:scale(.95); } to { opacity:1; transform:scale(1); } }
 
-    .modal-handle { width: 36px; height: 4px; background: var(--gray-200); border-radius: 99px; margin: 10px auto; }
+    .modal-handle {
+      width: 36px; height: 4px;
+      background: var(--gray-200);
+      border-radius: 99px;
+      margin: 10px auto;
+    }
+
     @media (min-width: 600px) { .modal-handle { display: none; } }
 
     .modal-header {
@@ -360,14 +394,22 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    .modal-close:hover { opacity: 1; }
+
     .modal-body { padding: 20px; }
 
-    .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .modal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
     @media (max-width: 380px) { .modal-grid { grid-template-columns: 1fr; } }
+
     .field-full { grid-column: 1 / -1; }
 
     .modal-footer {
-      padding: 14px 20px 20px;
+      padding: 14px 20px calc(20px + env(safe-area-inset-bottom));
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
@@ -376,7 +418,12 @@
       position: sticky; bottom: 0;
     }
 
-    footer { text-align: center; color: var(--gray-400); font-size: 0.72rem; padding: 14px; }
+    footer {
+      text-align: center;
+      color: var(--gray-400);
+      font-size: 0.72rem;
+      padding: 14px;
+    }
   </style>
 </head>
 <body>
@@ -391,49 +438,67 @@
 
 <main>
 
+  <!-- Job Details -->
   <div class="card">
     <div class="card-title">Job Details</div>
     <div class="input-grid">
       <div class="field">
         <label for="distance">Distance <span>(miles)</span></label>
-        <input type="number" id="distance" inputmode="decimal" min="0" step="0.1" placeholder="e.g. 20" autocomplete="off" />
+        <input type="number" id="distance" inputmode="decimal"
+               min="0" step="0.1" placeholder="e.g. 20" autocomplete="off" />
         <div class="error-msg" id="distance-err">Enter a valid distance.</div>
       </div>
       <div class="field">
         <label for="jobHours">Estimated Hours</label>
-        <input type="number" id="jobHours" inputmode="decimal" min="0" step="0.5" placeholder="e.g. 2" autocomplete="off" />
+        <input type="number" id="jobHours" inputmode="decimal"
+               min="0" step="0.5" placeholder="e.g. 2" autocomplete="off" />
         <div class="error-msg" id="jobHours-err">Enter a valid number of hours.</div>
       </div>
     </div>
   </div>
 
+  <!-- Services -->
   <div class="card">
     <div class="card-title">Services</div>
     <div class="service-list">
+
+      <!-- Base service — always included -->
       <div class="service-row base">
         <div class="service-check">✓</div>
         <div class="service-name">Basic Lawn Care Service</div>
         <div class="service-price">Calculated</div>
       </div>
+
+      <!-- Add-ons -->
       <div class="service-row" id="row-fertilization" onclick="toggleService('fertilization')">
-        <div class="service-check" id="chk-fertilization"><input type="checkbox" id="fertilization" /></div>
+        <div class="service-check" id="chk-fertilization">
+          <input type="checkbox" id="fertilization" />
+        </div>
         <div class="service-name">Lawn Fertilization</div>
         <div class="service-price">+$40.00</div>
       </div>
+
       <div class="service-row" id="row-leaf" onclick="toggleService('leaf')">
-        <div class="service-check" id="chk-leaf"><input type="checkbox" id="leaf" /></div>
+        <div class="service-check" id="chk-leaf">
+          <input type="checkbox" id="leaf" />
+        </div>
         <div class="service-name">Leaf Cleaning</div>
         <div class="service-price">+$20.00</div>
       </div>
+
       <div class="service-row" id="row-snow" onclick="toggleService('snow')">
-        <div class="service-check" id="chk-snow"><input type="checkbox" id="snow" /></div>
+        <div class="service-check" id="chk-snow">
+          <input type="checkbox" id="snow" />
+        </div>
         <div class="service-name">Snow Removal</div>
         <div class="service-price">+$20.00</div>
       </div>
+
     </div>
     <button class="btn btn-primary" onclick="calculateQuote()">Calculate Quote</button>
   </div>
 
+  <!-- Result -->
   <div class="result-box" id="resultBox">
     <div class="result-header">
       <div class="result-header-label">Quote Summary</div>
@@ -450,6 +515,7 @@
 
 <footer>© 2026 Madrigal Landscaping · Utah's Lawn Care · All rights reserved</footer>
 
+<!-- Modal: Client Info -->
 <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-handle"></div>
@@ -461,27 +527,32 @@
       <div class="modal-grid">
         <div class="field">
           <label for="firstName">First Name</label>
-          <input type="text" id="firstName" placeholder="John" autocomplete="given-name" autocapitalize="words" />
+          <input type="text" id="firstName" placeholder="John"
+                 autocomplete="given-name" autocapitalize="words" />
           <div class="error-msg" id="firstName-err">Required</div>
         </div>
         <div class="field">
           <label for="lastName">Last Name</label>
-          <input type="text" id="lastName" placeholder="Smith" autocomplete="family-name" autocapitalize="words" />
+          <input type="text" id="lastName" placeholder="Smith"
+                 autocomplete="family-name" autocapitalize="words" />
           <div class="error-msg" id="lastName-err">Required</div>
         </div>
         <div class="field">
           <label for="phone">Phone</label>
-          <input type="tel" id="phone" placeholder="(555) 000-0000" autocomplete="tel" inputmode="tel" />
+          <input type="tel" id="phone" placeholder="(555) 000-0000"
+                 autocomplete="tel" inputmode="tel" />
           <div class="error-msg" id="phone-err">Required</div>
         </div>
         <div class="field">
           <label for="email">Email</label>
-          <input type="email" id="email" placeholder="john@example.com" autocomplete="email" inputmode="email" />
+          <input type="email" id="email" placeholder="john@example.com"
+                 autocomplete="email" inputmode="email" />
           <div class="error-msg" id="email-err">Required</div>
         </div>
         <div class="field field-full">
           <label for="address">Service Address</label>
-          <input type="text" id="address" placeholder="123 Main St, City, UT 00000" autocomplete="street-address" autocapitalize="words" />
+          <input type="text" id="address" placeholder="123 Main St, City, UT 00000"
+                 autocomplete="street-address" autocapitalize="words" />
           <div class="error-msg" id="address-err">Required</div>
         </div>
       </div>
@@ -494,31 +565,34 @@
 </div>
 
 <script>
-  const TAX_RATE = 0.0685;
+  const TAX_RATE = 0.0685; // Utah combined sales tax (approx.)
   const ADDONS = {
     fertilization: { label: 'Lawn Fertilization', price: 40 },
     leaf:          { label: 'Leaf Cleaning',       price: 20 },
     snow:          { label: 'Snow Removal',         price: 20 },
   };
 
-  let quoteData    = null;
+  let quoteData   = null;
   let activeAddons = new Set();
 
+  // ── Toggle add-on ─────────────────────────────────
   function toggleService(id) {
     if (activeAddons.has(id)) {
       activeAddons.delete(id);
-      document.getElementById('row-' + id).classList.remove('active');
-      document.getElementById('chk-' + id).textContent = '';
+      document.getElementById(`row-${id}`).classList.remove('active');
+      document.getElementById(`chk-${id}`).textContent = '';
     } else {
       activeAddons.add(id);
-      document.getElementById('row-' + id).classList.add('active');
-      document.getElementById('chk-' + id).textContent = '✓';
+      document.getElementById(`row-${id}`).classList.add('active');
+      document.getElementById(`chk-${id}`).textContent = '✓';
     }
   }
 
+  // ── Calculate ──────────────────────────────────────
   function calculateQuote() {
     const distEl  = document.getElementById('distance');
     const hoursEl = document.getElementById('jobHours');
+
     const rawMiles = parseFloat(distEl.value);
     const rawHours = parseFloat(hoursEl.value);
     let valid = true;
@@ -543,66 +617,88 @@
 
     if (!valid) return;
 
+    // Silent minimums
     const miles = Math.max(rawMiles, 15);
     const hours = Math.max(rawHours, 0.5);
+
+    // Formula: Quote = ((20*hours) + (0.35*miles)) * 1.35,  min $45
     const base       = (20 * hours) + (0.35 * miles);
     const withMarkup = base * 1.35;
     const lawnCare   = Math.max(withMarkup, 45);
 
+    // Add-ons
     const addonLines = [];
     let addonTotal = 0;
-    activeAddons.forEach(function(id) {
+    activeAddons.forEach(id => {
       addonLines.push({ label: ADDONS[id].label, price: ADDONS[id].price });
       addonTotal += ADDONS[id].price;
     });
 
-    const subtotal = lawnCare + addonTotal;
-    const tax      = subtotal * TAX_RATE;
-    const total    = subtotal + tax;
+    const subtotal  = lawnCare + addonTotal;
+    const tax       = subtotal * TAX_RATE;
+    const total     = subtotal + tax;
 
     quoteData = {
-      lawnCare: lawnCare, addonLines: addonLines,
-      subtotal: subtotal, tax: tax, total: total,
-      date: new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' })
+      lawnCare, addonLines, subtotal, tax, total,
+      date: new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }),
     };
 
     renderResult(lawnCare, addonLines, subtotal, tax, total);
-    var box = document.getElementById('resultBox');
+
+    const box = document.getElementById('resultBox');
     box.classList.add('visible');
     box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
+  // ── Render result body ─────────────────────────────
   function renderResult(lawnCare, addonLines, subtotal, tax, total) {
-    var body = document.getElementById('resultBody');
-    var html = '';
-    html += lineItem('Basic Lawn Care Service', lawnCare, '');
-    addonLines.forEach(function(a) { html += lineItem(a.label, a.price, ''); });
-    if (addonLines.length > 0) { html += lineItem('Subtotal', subtotal, 'line-subtotal'); }
-    html += lineItem('Utah Sales Tax (6.85%)', tax, 'line-tax');
+    const body = document.getElementById('resultBody');
+    let html = '';
+
+    // Service lines
+    html += lineItem('Basic Lawn Care Service', lawnCare);
+    addonLines.forEach(a => { html += lineItem(a.label, a.price); });
+
+    // Subtotal (only if add-ons present)
+    if (addonLines.length > 0) {
+      html += lineItem('Subtotal', subtotal, 'line-subtotal');
+    }
+
+    // Tax
+    html += lineItem(`Utah Sales Tax (6.85%)`, tax, 'line-tax');
+
+    // Total
     html += lineItem('TOTAL', total, 'line-total');
+
     body.innerHTML = html;
   }
 
-  function lineItem(name, amount, extraClass) {
-    return '<div class="line-item ' + extraClass + '"><span class="li-name">' + name + '</span><span class="li-price">' + fmt(amount) + '</span></div>';
+  function lineItem(name, amount, extraClass = '') {
+    return `<div class="line-item ${extraClass}">
+      <span class="li-name">${name}</span>
+      <span class="li-price">${fmt(amount)}</span>
+    </div>`;
   }
 
+  // ── Reset ──────────────────────────────────────────
   function resetForm() {
-    document.getElementById('distance').value = '';
+    document.getElementById('distance').value  = '';
     document.getElementById('jobHours').value  = '';
     document.getElementById('resultBox').classList.remove('visible');
     quoteData = null;
-    activeAddons.forEach(function(id) {
-      document.getElementById('row-' + id).classList.remove('active');
-      document.getElementById('chk-' + id).textContent = '';
+    // Clear add-ons
+    activeAddons.forEach(id => {
+      document.getElementById(`row-${id}`).classList.remove('active');
+      document.getElementById(`chk-${id}`).textContent = '';
     });
     activeAddons.clear();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  // ── Modal ──────────────────────────────────────────
   function openModal() {
     document.getElementById('modalOverlay').classList.add('open');
-    setTimeout(function() { document.getElementById('firstName').focus(); }, 300);
+    setTimeout(() => document.getElementById('firstName').focus(), 300);
   }
 
   function closeModal() {
@@ -613,14 +709,15 @@
     if (e.target === document.getElementById('modalOverlay')) closeModal();
   }
 
-  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
+  // ── PDF Export ─────────────────────────────────────
   function exportPDF() {
-    var fields = ['firstName','lastName','phone','email','address'];
-    var valid = true;
-    fields.forEach(function(id) {
-      var el = document.getElementById(id);
-      var er = document.getElementById(id + '-err');
+    const fields = ['firstName','lastName','phone','email','address'];
+    let valid = true;
+    fields.forEach(id => {
+      const el = document.getElementById(id);
+      const er = document.getElementById(`${id}-err`);
       if (!el.value.trim()) {
         el.classList.add('error'); er.classList.add('visible'); valid = false;
       } else {
@@ -628,101 +725,184 @@
       }
     });
     if (!valid) return;
+
     generatePDF({
       firstName: document.getElementById('firstName').value.trim(),
       lastName:  document.getElementById('lastName').value.trim(),
       phone:     document.getElementById('phone').value.trim(),
       email:     document.getElementById('email').value.trim(),
-      address:   document.getElementById('address').value.trim()
+      address:   document.getElementById('address').value.trim(),
     });
     closeModal();
   }
 
+  // ── PDF Generation ─────────────────────────────────
   function generatePDF(client) {
-    var jsPDF = window.jspdf.jsPDF;
-    var doc = new jsPDF({ unit: 'pt', format: 'letter' });
-    var W = doc.internal.pageSize.getWidth();
-    var H = doc.internal.pageSize.getHeight();
-    var M = 52;
-    var Q = quoteData;
-    var y = 0;
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+    const W = doc.internal.pageSize.getWidth();
+    const H = doc.internal.pageSize.getHeight();
+    const M = 52;
+    const Q = quoteData;
+    let y   = 0;
 
-    doc.setFillColor(26,61,26).rect(0,0,W,100,'F');
-    doc.setTextColor(200,168,85).setFont('helvetica','bold').setFontSize(24);
+    // ── Header ──
+    doc.setFillColor(26, 61, 26);
+    doc.rect(0, 0, W, 100, 'F');
+
+    doc.setTextColor(200, 168, 85);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(24);
     doc.text('Madrigal Landscaping', M, 46);
-    doc.setTextColor(255,255,255).setFont('helvetica','normal').setFontSize(10);
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
     doc.text("Utah's Lawn Care", M, 64);
-    doc.setFillColor(200,168,85).roundedRect(W-M-82,26,82,28,6,6,'F');
-    doc.setTextColor(26,61,26).setFont('helvetica','bold').setFontSize(13);
-    doc.text('QUOTE', W-M-41, 45, { align:'center' });
-    doc.setTextColor(255,255,255).setFont('helvetica','normal').setFontSize(9);
-    doc.text('Date: '+Q.date, W-M, 70, { align:'right' });
+
+    // Quote badge
+    doc.setFillColor(200, 168, 85);
+    doc.roundedRect(W - M - 82, 26, 82, 28, 6, 6, 'F');
+    doc.setTextColor(26, 61, 26);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.text('QUOTE', W - M - 41, 45, { align: 'center' });
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.text(`Date: ${Q.date}`, W - M, 70, { align: 'right' });
+
     y = 128;
 
-    pdfSection(doc,'Client Information',M,y,W); y+=26;
-    [['Name', client.firstName+' '+client.lastName],['Phone',client.phone],['Email',client.email],['Address',client.address]]
-    .forEach(function(row) {
-      doc.setFont('helvetica','bold').setFontSize(10).setTextColor(80,80,80);
-      doc.text(row[0]+':', M+4, y);
-      doc.setFont('helvetica','normal').setTextColor(30,30,30);
-      doc.text(row[1], M+80, y);
-      y+=18;
+    // ── Client Information ──
+    pdfSection(doc, 'Client Information', M, y, W);
+    y += 26;
+
+    const clientRows = [
+      ['Name',    `${client.firstName} ${client.lastName}`],
+      ['Phone',   client.phone],
+      ['Email',   client.email],
+      ['Address', client.address],
+    ];
+
+    clientRows.forEach(([k, v]) => {
+      doc.setFont('helvetica', 'bold').setFontSize(10).setTextColor(80, 80, 80);
+      doc.text(k + ':', M + 4, y);
+      doc.setFont('helvetica', 'normal').setTextColor(30, 30, 30);
+      doc.text(v, M + 80, y);
+      y += 18;
     });
-    y+=20;
 
-    pdfSection(doc,'Services',M,y,W); y+=26;
-    doc.setFillColor(232,245,232).rect(M,y-14,W-M*2,20,'F');
-    doc.setFont('helvetica','bold').setFontSize(9).setTextColor(26,61,26);
-    doc.text('SERVICE',M+8,y);
-    doc.text('AMOUNT',W-M-8,y,{align:'right'});
-    y+=14;
-    pdfServiceRow(doc,'Basic Lawn Care Service',Q.lawnCare,M,y,W); y+=22;
-    Q.addonLines.forEach(function(a) { pdfServiceRow(doc,a.label,a.price,M,y,W); y+=22; });
-    y+=6;
+    y += 20;
 
-    var tX = W-M-200;
+    // ── Services ──
+    pdfSection(doc, 'Services', M, y, W);
+    y += 26;
+
+    // Table header
+    doc.setFillColor(232, 245, 232);
+    doc.rect(M, y - 14, W - M * 2, 20, 'F');
+    doc.setFont('helvetica', 'bold').setFontSize(9).setTextColor(26, 61, 26);
+    doc.text('SERVICE', M + 8, y);
+    doc.text('AMOUNT', W - M - 8, y, { align: 'right' });
+    y += 14;
+
+    // Basic Lawn Care
+    pdfServiceRow(doc, 'Basic Lawn Care Service', Q.lawnCare, M, y, W);
+    y += 22;
+
+    // Add-ons
+    Q.addonLines.forEach(a => {
+      pdfServiceRow(doc, a.label, a.price, M, y, W);
+      y += 22;
+    });
+
+    y += 6;
+
+    // ── Totals ──
+    const totalsX = W - M - 200;
+    const totalsW = 200;
+
+    // Subtotal (if add-ons)
     if (Q.addonLines.length > 0) {
-      doc.setDrawColor(200,220,200).line(tX,y,W-M,y); y+=12;
-      doc.setFont('helvetica','normal').setFontSize(10).setTextColor(80,80,80);
-      doc.text('Subtotal',tX,y);
-      doc.setFont('helvetica','bold').setTextColor(30,30,30);
-      doc.text(fmt(Q.subtotal),W-M,y,{align:'right'}); y+=18;
+      doc.setDrawColor(200, 220, 200);
+      doc.line(totalsX, y, W - M, y);
+      y += 12;
+      doc.setFont('helvetica', 'normal').setFontSize(10).setTextColor(80, 80, 80);
+      doc.text('Subtotal', totalsX, y);
+      doc.setFont('helvetica', 'bold').setTextColor(30, 30, 30);
+      doc.text(fmt(Q.subtotal), W - M, y, { align: 'right' });
+      y += 18;
     }
-    doc.setFont('helvetica','normal').setFontSize(9).setTextColor(100,100,100);
-    doc.text('Utah Sales Tax (6.85%)',tX,y);
-    doc.text(fmt(Q.tax),W-M,y,{align:'right'}); y+=16;
-    y+=4;
-    doc.setFillColor(26,61,26).roundedRect(M,y,W-M*2,50,8,8,'F');
-    doc.setTextColor(200,168,85).setFont('helvetica','bold').setFontSize(12);
-    doc.text('TOTAL',M+20,y+22);
-    doc.setTextColor(240,217,138).setFontSize(22);
-    doc.text(fmt(Q.total),W-M-20,y+34,{align:'right'}); y+=70;
 
-    doc.setFillColor(245,250,245).roundedRect(M,y,W-M*2,44,6,6,'F');
-    doc.setTextColor(80,120,80).setFont('helvetica','italic').setFontSize(8.5);
-    doc.text('This quote is an estimate. Final pricing may vary based on site conditions.',W/2,y+15,{align:'center'});
-    doc.text('Tax rate shown is approximate. Contact Madrigal Landscaping to confirm.',W/2,y+29,{align:'center'});
+    // Tax
+    doc.setFont('helvetica', 'normal').setFontSize(9).setTextColor(100, 100, 100);
+    doc.text('Utah Sales Tax (6.85%)', totalsX, y);
+    doc.text(fmt(Q.tax), W - M, y, { align: 'right' });
+    y += 16;
 
-    doc.setFillColor(26,61,26).rect(0,H-32,W,32,'F');
-    doc.setTextColor(200,168,85).setFont('helvetica','normal').setFontSize(8.5);
-    doc.text("© 2026 Madrigal Landscaping  ·  Utah's Lawn Care  ·  All Rights Reserved",W/2,H-12,{align:'center'});
+    // Total box
+    y += 4;
+    doc.setFillColor(26, 61, 26);
+    doc.roundedRect(M, y, W - M * 2, 50, 8, 8, 'F');
+    doc.setTextColor(200, 168, 85).setFont('helvetica', 'bold').setFontSize(12);
+    doc.text('TOTAL', M + 20, y + 22);
+    doc.setTextColor(240, 217, 138).setFontSize(22);
+    doc.text(fmt(Q.total), W - M - 20, y + 34, { align: 'right' });
+    y += 70;
 
-    doc.save('Madrigal_Quote_'+client.lastName+'_'+Q.date.replace(/,?\s+/g,'_')+'.pdf');
+    // ── Disclaimer ──
+    doc.setFillColor(245, 250, 245);
+    doc.roundedRect(M, y, W - M * 2, 44, 6, 6, 'F');
+    doc.setTextColor(80, 120, 80).setFont('helvetica', 'italic').setFontSize(8.5);
+    doc.text('This quote is an estimate. Final pricing may vary based on site conditions.', W / 2, y + 15, { align: 'center' });
+    doc.text('Tax rate shown is approximate. Contact Madrigal Landscaping to confirm.', W / 2, y + 29, { align: 'center' });
+
+    // ── Page footer ──
+    doc.setFillColor(26, 61, 26).rect(0, H - 32, W, 32, 'F');
+    doc.setTextColor(200, 168, 85).setFont('helvetica', 'normal').setFontSize(8.5);
+    doc.text('© 2026 Madrigal Landscaping  ·  Utah\'s Lawn Care  ·  All Rights Reserved', W / 2, H - 12, { align: 'center' });
+
+    const fileName = `Madrigal_Quote_${client.lastName}_${Q.date.replace(/,?\s+/g, '_')}.pdf`;
+    const blob = doc.output('blob');
+
+    // Web Share API — shows native share sheet on iOS/Android (Mail, AirDrop, Save to Files…)
+    if (navigator.canShare && navigator.canShare({ files: [new File([blob], fileName, { type: 'application/pdf' })] })) {
+      navigator.share({
+        title: 'Madrigal Landscaping Quote',
+        files: [new File([blob], fileName, { type: 'application/pdf' })],
+      }).catch(() => triggerDownload(blob, fileName));
+    } else {
+      triggerDownload(blob, fileName);
+    }
   }
 
-  function pdfSection(doc,title,x,y,W) {
-    doc.setFillColor(74,158,74).rect(x,y-11,3,16,'F');
-    doc.setFont('helvetica','bold').setFontSize(11).setTextColor(26,61,26);
-    doc.text(title,x+10,y);
-    doc.setDrawColor(190,220,190).line(x,y+5,W-x,y+5);
+  function triggerDownload(blob, fileName) {
+    const url = URL.createObjectURL(blob);
+    const a   = document.createElement('a');
+    a.href     = url;
+    a.download = fileName;
+    a.target   = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
   }
 
-  function pdfServiceRow(doc,name,price,M,y,W) {
-    doc.setFont('helvetica','normal').setFontSize(10).setTextColor(40,40,40);
-    doc.text(name,M+8,y);
-    doc.setFont('helvetica','bold');
-    doc.text(fmt(price),W-M-8,y,{align:'right'});
-    doc.setDrawColor(225,235,225).line(M+8,y+5,W-M-8,y+5);
+  function pdfSection(doc, title, x, y, W) {
+    doc.setFillColor(74, 158, 74).rect(x, y - 11, 3, 16, 'F');
+    doc.setFont('helvetica', 'bold').setFontSize(11).setTextColor(26, 61, 26);
+    doc.text(title, x + 10, y);
+    doc.setDrawColor(190, 220, 190).line(x, y + 5, W - x, y + 5);
+  }
+
+  function pdfServiceRow(doc, name, price, M, y, W) {
+    doc.setFont('helvetica', 'normal').setFontSize(10).setTextColor(40, 40, 40);
+    doc.text(name, M + 8, y);
+    doc.setFont('helvetica', 'bold');
+    doc.text(fmt(price), W - M - 8, y, { align: 'right' });
+    doc.setDrawColor(225, 235, 225).line(M + 8, y + 5, W - M - 8, y + 5);
   }
 
   function fmt(n) {
