@@ -864,7 +864,30 @@
     doc.setTextColor(200, 168, 85).setFont('helvetica', 'normal').setFontSize(8.5);
     doc.text('© 2026 Madrigal Landscaping  ·  Utah\'s Lawn Care  ·  All Rights Reserved', W / 2, H - 12, { align: 'center' });
 
-    doc.save(`Madrigal_Quote_${client.lastName}_${Q.date.replace(/,?\s+/g, '_')}.pdf`);
+    const fileName = `Madrigal_Quote_${client.lastName}_${Q.date.replace(/,?\s+/g, '_')}.pdf`;
+    const blob = doc.output('blob');
+
+    // Web Share API — shows native share sheet on iOS/Android (Mail, AirDrop, Save to Files…)
+    if (navigator.canShare && navigator.canShare({ files: [new File([blob], fileName, { type: 'application/pdf' })] })) {
+      navigator.share({
+        title: 'Madrigal Landscaping Quote',
+        files: [new File([blob], fileName, { type: 'application/pdf' })],
+      }).catch(() => triggerDownload(blob, fileName));
+    } else {
+      triggerDownload(blob, fileName);
+    }
+  }
+
+  function triggerDownload(blob, fileName) {
+    const url = URL.createObjectURL(blob);
+    const a   = document.createElement('a');
+    a.href     = url;
+    a.download = fileName;
+    a.target   = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
   }
 
   function pdfSection(doc, title, x, y, W) {
