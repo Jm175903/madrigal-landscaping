@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Madrigal Landscaping — Quote Calculator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark:   #1a3d1a;
+      --green-mid:    #2e6b2e;
+      --green-light:  #4a9e4a;
+      --green-pale:   #e8f5e8;
+      --gold:         #c8a855;
+      --gold-light:   #f0d98a;
+      --white:        #ffffff;
+      --gray-100:     #f7f7f7;
+      --gray-200:     #e8e8e8;
+      --gray-400:     #9a9a9a;
+      --gray-700:     #444444;
+      --text:         #1e1e1e;
+      --shadow:       0 4px 24px rgba(0,0,0,0.12);
+      --radius:       12px;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--gray-100);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
+      color: var(--white);
+      padding: 28px 32px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+
+    .logo-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+
+    .header-text h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .header-text p {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+
+    /* ── Main layout ── */
+    main {
+      max-width: 780px;
+      margin: 40px auto;
+      padding: 0 16px 60px;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 36px 40px;
+      margin-bottom: 28px;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--green-pale);
+    }
+
+    /* ── Inputs ── */
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 520px) { .input-grid { grid-template-columns: 1fr; } }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    label span {
+      font-weight: 400;
+      text-transform: none;
+      color: var(--gray-400);
+      font-size: 0.8rem;
+    }
+
+    input[type="number"], input[type="text"], input[type="tel"], input[type="email"] {
+      padding: 12px 16px;
+      border: 2px solid var(--gray-200);
+      border-radius: 8px;
+      font-size: 1rem;
+      color: var(--text);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+      width: 100%;
+    }
+
+    input:focus {
+      border-color: var(--green-light);
+      box-shadow: 0 0 0 3px rgba(74,158,74,0.15);
+    }
+
+    .hint {
+      font-size: 0.75rem;
+      color: var(--gray-400);
+      margin-top: 2px;
+    }
+
+    /* ── Calculate button ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+      text-decoration: none;
+    }
+
+    .btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--green-mid), var(--green-light));
+      color: var(--white);
+      box-shadow: 0 3px 12px rgba(46,107,46,0.35);
+      margin-top: 24px;
+      width: 100%;
+      justify-content: center;
+      font-size: 1.05rem;
+    }
+
+    .btn-primary:hover { background: linear-gradient(135deg, var(--green-dark), var(--green-mid)); }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--green-dark);
+      box-shadow: 0 3px 12px rgba(200,168,85,0.4);
+    }
+
+    .btn-gold:hover { background: linear-gradient(135deg, #b8943f, var(--gold)); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--green-mid);
+      border: 2px solid var(--green-mid);
+    }
+
+    .btn-outline:hover { background: var(--green-pale); }
+
+    /* ── Result display ── */
+    .result-box {
+      display: none;
+      background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+      border-radius: var(--radius);
+      padding: 32px 40px;
+      color: var(--white);
+      text-align: center;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .result-box.visible { display: block; }
+
+    .result-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.75;
+      margin-bottom: 8px;
+    }
+
+    .result-amount {
+      font-size: 3.2rem;
+      font-weight: 800;
+      color: var(--gold-light);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .result-breakdown {
+      font-size: 0.82rem;
+      opacity: 0.7;
+      line-height: 1.7;
+    }
+
+    .result-breakdown strong { opacity: 1; color: var(--gold-light); }
+
+    .result-actions {
+      margin-top: 24px;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ── Modal overlay ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--white);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 16px 56px rgba(0,0,0,0.3);
+      overflow: hidden;
+      animation: slideUp 0.25s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+      color: var(--white);
+      padding: 20px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h2 { font-size: 1.1rem; font-weight: 700; }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--white);
+      font-size: 1.5rem;
+      cursor: pointer;
+      line-height: 1;
+      opacity: 0.75;
+      padding: 0 4px;
+    }
+
+    .modal-close:hover { opacity: 1; }
+
+    .modal-body { padding: 28px; }
+
+    .modal-body .input-grid { grid-template-columns: 1fr 1fr; }
+
+    .modal-body .field-full { grid-column: 1 / -1; }
+
+    .modal-footer {
+      padding: 0 28px 28px;
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      color: var(--gray-400);
+      font-size: 0.8rem;
+      padding: 20px;
+    }
+
+    /* ── Validation ── */
+    input.error { border-color: #e05050; }
+    .error-msg { color: #e05050; font-size: 0.75rem; margin-top: 2px; display: none; }
+    .error-msg.visible { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════ HEADER ══════════════════ -->
+<header>
+  <div class="logo-icon">🌿</div>
+  <div class="header-text">
+    <h1>Madrigal Landscaping</h1>
+    <p>Instant Quote Calculator</p>
+  </div>
+</header>
+
+<!-- ══════════════════ MAIN ══════════════════ -->
+<main>
+
+  <!-- Calculator card -->
+  <div class="card">
+    <div class="card-title">Job Details</div>
+    <div class="input-grid">
+      <div class="field">
+        <label for="distance">Distance <span>(miles)</span></label>
+        <input type="number" id="distance" min="0" step="0.1" placeholder="e.g. 20" />
+        <div class="hint">Minimum billing distance: 15 miles</div>
+        <div class="error-msg" id="distance-err">Please enter a valid distance.</div>
+      </div>
+      <div class="field">
+        <label for="jobTime">Estimated Job Time <span>(minutes)</span></label>
+        <input type="number" id="jobTime" min="0" step="1" placeholder="e.g. 90" />
+        <div class="hint">Minimum billing time: 30 minutes</div>
+        <div class="error-msg" id="jobTime-err">Please enter a valid job time.</div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calculateQuote()">Calculate Quote</button>
+  </div>
+
+  <!-- Result box -->
+  <div class="result-box" id="resultBox">
+    <div class="result-label">Estimated Quote</div>
+    <div class="result-amount" id="resultAmount">$0.00</div>
+    <div class="result-breakdown" id="resultBreakdown"></div>
+    <div class="result-actions">
+      <button class="btn btn-gold" onclick="openModal()">Export to PDF</button>
+      <button class="btn btn-outline" style="color:#fff;border-color:rgba(255,255,255,0.5);" onclick="resetForm()">New Quote</button>
+    </div>
+  </div>
+
+</main>
+
+<footer>© 2026 Madrigal Landscaping · All rights reserved</footer>
+
+<!-- ══════════════════ MODAL: Client Info ══════════════════ -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Client Information</h2>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="input-grid">
+        <div class="field">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" placeholder="John" />
+          <div class="error-msg" id="firstName-err">Required</div>
+        </div>
+        <div class="field">
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" placeholder="Smith" />
+          <div class="error-msg" id="lastName-err">Required</div>
+        </div>
+        <div class="field">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" placeholder="(555) 000-0000" />
+          <div class="error-msg" id="phone-err">Required</div>
+        </div>
+        <div class="field">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="john@example.com" />
+          <div class="error-msg" id="email-err">Required</div>
+        </div>
+        <div class="field field-full">
+          <label for="address">Service Address</label>
+          <input type="text" id="address" placeholder="123 Main St, City, State 00000" />
+          <div class="error-msg" id="address-err">Required</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-gold" onclick="exportPDF()">Download PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ SCRIPT ══════════════════ -->
+<script>
+  // ── State ──────────────────────────────────────────
+  let quoteData = null;
+
+  // ── Calculate ──────────────────────────────────────
+  function calculateQuote() {
+    const distInput   = document.getElementById('distance');
+    const timeInput   = document.getElementById('jobTime');
+    const distErr     = document.getElementById('distance-err');
+    const timeErr     = document.getElementById('jobTime-err');
+
+    let valid = true;
+
+    const rawDist = parseFloat(distInput.value);
+    const rawTime = parseFloat(timeInput.value);
+
+    // Validate distance
+    if (isNaN(rawDist) || rawDist < 0) {
+      distInput.classList.add('error');
+      distErr.classList.add('visible');
+      valid = false;
+    } else {
+      distInput.classList.remove('error');
+      distErr.classList.remove('visible');
+    }
+
+    // Validate time
+    if (isNaN(rawTime) || rawTime < 0) {
+      timeInput.classList.add('error');
+      timeErr.classList.add('visible');
+      valid = false;
+    } else {
+      timeInput.classList.remove('error');
+      timeErr.classList.remove('visible');
+    }
+
+    if (!valid) return;
+
+    // Apply minimums
+    const effectiveDist = Math.max(rawDist, 15);
+    const effectiveTime = Math.max(rawTime, 30);
+
+    // Quote = ((distance * job_time) + 15) * 1.35,  min $45
+    const base       = (effectiveDist * effectiveTime) + 15;
+    const withMarkup = base * 1.35;
+    const finalQuote = Math.max(withMarkup, 45);
+
+    quoteData = {
+      rawDist,
+      rawTime,
+      effectiveDist,
+      effectiveTime,
+      base,
+      withMarkup,
+      finalQuote,
+      date: new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' })
+    };
+
+    // Display result
+    const resultBox  = document.getElementById('resultBox');
+    const resultAmt  = document.getElementById('resultAmount');
+    const resultBD   = document.getElementById('resultBreakdown');
+
+    resultAmt.textContent = formatCurrency(finalQuote);
+
+    const distNote = rawDist < 15
+      ? `Distance: ${rawDist} mi → billed as <strong>15 mi</strong> (minimum)`
+      : `Distance: <strong>${rawDist} mi</strong>`;
+
+    const timeNote = rawTime < 30
+      ? `Job Time: ${rawTime} min → billed as <strong>30 min</strong> (minimum)`
+      : `Job Time: <strong>${rawTime} min</strong>`;
+
+    const minNote = withMarkup < 45
+      ? `<strong>Minimum quote of $45.00 applied</strong>`
+      : '';
+
+    resultBD.innerHTML = [
+      distNote,
+      timeNote,
+      `Base: (${effectiveDist} × ${effectiveTime}) + $15 = $${base.toFixed(2)}`,
+      `After 35% markup: $${withMarkup.toFixed(2)}`,
+      minNote
+    ].filter(Boolean).join('&ensp;·&ensp;');
+
+    resultBox.classList.add('visible');
+    resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // ── Reset ──────────────────────────────────────────
+  function resetForm() {
+    document.getElementById('distance').value = '';
+    document.getElementById('jobTime').value  = '';
+    document.getElementById('resultBox').classList.remove('visible');
+    quoteData = null;
+  }
+
+  // ── Modal ──────────────────────────────────────────
+  function openModal() {
+    document.getElementById('modalOverlay').classList.add('open');
+    document.getElementById('firstName').focus();
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  // Close on Escape key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  // ── PDF Export ─────────────────────────────────────
+  function exportPDF() {
+    const fields = ['firstName','lastName','phone','email','address'];
+    let valid = true;
+
+    fields.forEach(id => {
+      const el  = document.getElementById(id);
+      const err = document.getElementById(`${id}-err`);
+      if (!el.value.trim()) {
+        el.classList.add('error');
+        err.classList.add('visible');
+        valid = false;
+      } else {
+        el.classList.remove('error');
+        err.classList.remove('visible');
+      }
+    });
+
+    if (!valid) return;
+
+    const client = {
+      firstName: document.getElementById('firstName').value.trim(),
+      lastName:  document.getElementById('lastName').value.trim(),
+      phone:     document.getElementById('phone').value.trim(),
+      email:     document.getElementById('email').value.trim(),
+      address:   document.getElementById('address').value.trim(),
+    };
+
+    generatePDF(client);
+    closeModal();
+  }
+
+  function generatePDF(client) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+
+    const W    = doc.internal.pageSize.getWidth();
+    const H    = doc.internal.pageSize.getHeight();
+    const MARGIN = 56;
+    let y = 0;
+
+    // ── Header background ──
+    doc.setFillColor(26, 61, 26);   // --green-dark
+    doc.rect(0, 0, W, 110, 'F');
+
+    // Company name
+    doc.setTextColor(200, 168, 85); // --gold
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(26);
+    doc.text('Madrigal Landscaping', MARGIN, 52);
+
+    // Tagline
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.text('Professional Landscaping Services', MARGIN, 72);
+
+    // "QUOTE" badge (right side)
+    doc.setFillColor(200, 168, 85);
+    doc.roundedRect(W - MARGIN - 80, 28, 80, 30, 6, 6, 'F');
+    doc.setTextColor(26, 61, 26);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text('QUOTE', W - MARGIN - 80 + 40, 48, { align: 'center' });
+
+    // Date (right side)
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.text(`Date: ${quoteData.date}`, W - MARGIN, 76, { align: 'right' });
+
+    y = 140;
+
+    // ── Client Information section ──
+    sectionHeading(doc, 'Client Information', MARGIN, y, W);
+    y += 30;
+
+    const clientRows = [
+      ['Name',    `${client.firstName} ${client.lastName}`],
+      ['Phone',   client.phone],
+      ['Email',   client.email],
+      ['Address', client.address],
+    ];
+
+    clientRows.forEach(([key, val]) => {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.setTextColor(68, 68, 68);
+      doc.text(key + ':', MARGIN, y);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(30, 30, 30);
+      doc.text(val, MARGIN + 80, y);
+      y += 20;
+    });
+
+    y += 18;
+
+    // ── Job Details section ──
+    sectionHeading(doc, 'Job Details', MARGIN, y, W);
+    y += 30;
+
+    const Q = quoteData;
+
+    const jobRows = [
+      ['Distance Entered',   `${Q.rawDist} miles`],
+      ['Effective Distance', `${Q.effectiveDist} miles${Q.rawDist < 15 ? '  (minimum 15 mi applied)' : ''}`],
+      ['Time Entered',       `${Q.rawTime} minutes`],
+      ['Effective Time',     `${Q.effectiveTime} minutes${Q.rawTime < 30 ? '  (minimum 30 min applied)' : ''}`],
+    ];
+
+    jobRows.forEach(([key, val]) => {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.setTextColor(68, 68, 68);
+      doc.text(key + ':', MARGIN, y);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(30, 30, 30);
+      doc.text(val, MARGIN + 150, y);
+      y += 20;
+    });
+
+    y += 18;
+
+    // ── Pricing Breakdown section ──
+    sectionHeading(doc, 'Pricing Breakdown', MARGIN, y, W);
+    y += 30;
+
+    const priceRows = [
+      ['Distance × Time',  `${Q.effectiveDist} mi × ${Q.effectiveTime} min = ${(Q.effectiveDist * Q.effectiveTime).toFixed(2)}`],
+      ['Service Fee',      '+ $15.00'],
+      ['Subtotal',         `$${Q.base.toFixed(2)}`],
+      ['35% Markup',       `+ $${(Q.withMarkup - Q.base).toFixed(2)}`],
+      Q.withMarkup < 45
+        ? ['Minimum Applied', '$45.00 minimum enforced']
+        : null,
+    ].filter(Boolean);
+
+    priceRows.forEach(([key, val]) => {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(68, 68, 68);
+      doc.text(key + ':', MARGIN + 20, y);
+      doc.setTextColor(30, 30, 30);
+      doc.text(val, W - MARGIN, y, { align: 'right' });
+
+      // Separator line
+      doc.setDrawColor(220, 220, 220);
+      doc.line(MARGIN + 20, y + 6, W - MARGIN, y + 6);
+      y += 24;
+    });
+
+    y += 8;
+
+    // ── Total box ──
+    doc.setFillColor(26, 61, 26);
+    doc.roundedRect(MARGIN, y, W - MARGIN * 2, 56, 8, 8, 'F');
+
+    doc.setTextColor(200, 168, 85);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.text('ESTIMATED TOTAL', MARGIN + 24, y + 24);
+
+    doc.setTextColor(240, 217, 138);
+    doc.setFontSize(22);
+    doc.text(formatCurrency(Q.finalQuote), W - MARGIN - 24, y + 36, { align: 'right' });
+
+    y += 80;
+
+    // ── Footer note ──
+    doc.setFillColor(232, 245, 232);
+    doc.roundedRect(MARGIN, y, W - MARGIN * 2, 52, 6, 6, 'F');
+    doc.setTextColor(46, 107, 46);
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(9);
+    const note = [
+      'This quote is an estimate and may be subject to adjustment based on site conditions.',
+      'Contact Madrigal Landscaping to confirm pricing before work begins.',
+    ];
+    note.forEach((line, i) => {
+      doc.text(line, W / 2, y + 18 + i * 16, { align: 'center' });
+    });
+
+    // ── Page footer ──
+    doc.setFillColor(26, 61, 26);
+    doc.rect(0, H - 36, W, 36, 'F');
+    doc.setTextColor(200, 168, 85);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.text('© 2026 Madrigal Landscaping  ·  All Rights Reserved', W / 2, H - 14, { align: 'center' });
+
+    // ── Save ──
+    const fileName = `Madrigal_Quote_${client.lastName}_${quoteData.date.replace(/,?\s+/g,'_')}.pdf`;
+    doc.save(fileName);
+  }
+
+  // Helper: draw a section heading with green accent bar
+  function sectionHeading(doc, title, x, y, pageW) {
+    doc.setFillColor(74, 158, 74);
+    doc.rect(x, y - 12, 4, 18, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.setTextColor(26, 61, 26);
+    doc.text(title, x + 12, y);
+    doc.setDrawColor(200, 225, 200);
+    doc.line(x, y + 6, pageW - x, y + 6);
+  }
+
+  function formatCurrency(n) {
+    return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+</script>
+</body>
+</html>
