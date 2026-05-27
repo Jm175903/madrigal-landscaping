@@ -462,9 +462,9 @@
     <div class="card-title">Services</div>
     <div class="service-list">
 
-      <!-- Base service — always included -->
-      <div class="service-row base">
-        <div class="service-check">✓</div>
+      <!-- Base service — selected by default, but toggleable -->
+      <div class="service-row active" id="row-lawn" onclick="toggleLawnCare()">
+        <div class="service-check" id="chk-lawn">✓</div>
         <div class="service-name">Basic Lawn Care Service</div>
         <div class="service-price">Calculated</div>
       </div>
@@ -572,8 +572,15 @@
     snow:          { label: 'Snow Removal',         price: 20 },
   };
 
-  let quoteData   = null;
-  let activeAddons = new Set();
+  let quoteData        = null;
+  let activeAddons     = new Set();
+  let lawnCareSelected = true;
+
+  function toggleLawnCare() {
+    lawnCareSelected = !lawnCareSelected;
+    document.getElementById('row-lawn').classList.toggle('active', lawnCareSelected);
+    document.getElementById('chk-lawn').textContent = lawnCareSelected ? '✓' : '';
+  }
 
   // ── Toggle add-on ─────────────────────────────────
   function toggleService(id) {
@@ -617,14 +624,21 @@
 
     if (!valid) return;
 
-    // Silent minimums
-    const miles = Math.max(rawMiles, 15);
-    const hours = Math.max(rawHours, 0.5);
+    // Require at least one service
+    if (!lawnCareSelected && activeAddons.size === 0) {
+      alert('Please select at least one service.');
+      return;
+    }
 
-    // Formula: Quote = ((20*hours) + (0.35*miles)) * 1.35,  min $45
-    const base       = (20 * hours) + (0.35 * miles);
-    const withMarkup = base * 1.35;
-    const lawnCare   = Math.max(withMarkup, 45);
+    // Lawn care (only when selected)
+    let lawnCare = 0;
+    if (lawnCareSelected) {
+      const miles      = Math.max(rawMiles, 15);
+      const hours      = Math.max(rawHours, 0.5);
+      const base       = (20 * hours) + (0.35 * miles);
+      const withMarkup = base * 1.35;
+      lawnCare         = Math.max(withMarkup, 45);
+    }
 
     // Add-ons
     const addonLines = [];
@@ -639,11 +653,11 @@
     const total     = subtotal + tax;
 
     quoteData = {
-      lawnCare, addonLines, subtotal, tax, total,
+      lawnCareSelected, lawnCare, addonLines, subtotal, tax, total,
       date: new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }),
     };
 
-    renderResult(lawnCare, addonLines, subtotal, tax, total);
+    renderResult(lawnCareSelected, lawnCare, addonLines, subtotal, tax, total);
 
     const box = document.getElementById('resultBox');
     box.classList.add('visible');
@@ -651,16 +665,16 @@
   }
 
   // ── Render result body ─────────────────────────────
-  function renderResult(lawnCare, addonLines, subtotal, tax, total) {
+  function renderResult(lawnCareSelected, lawnCare, addonLines, subtotal, tax, total) {
     const body = document.getElementById('resultBody');
     let html = '';
 
-    // Service lines
-    html += lineItem('Basic Lawn Care Service', lawnCare);
+    if (lawnCareSelected) html += lineItem('Basic Lawn Care Service', lawnCare);
     addonLines.forEach(a => { html += lineItem(a.label, a.price); });
 
-    // Subtotal (only if add-ons present)
-    if (addonLines.length > 0) {
+    // Subtotal only when multiple lines exist
+    const lineCount = (lawnCareSelected ? 1 : 0) + addonLines.length;
+    if (lineCount > 1) {
       html += lineItem('Subtotal', subtotal, 'line-subtotal');
     }
 
@@ -686,6 +700,10 @@
     document.getElementById('jobHours').value  = '';
     document.getElementById('resultBox').classList.remove('visible');
     quoteData = null;
+    // Reset lawn care to selected
+    lawnCareSelected = true;
+    document.getElementById('row-lawn').classList.add('active');
+    document.getElementById('chk-lawn').textContent = '✓';
     // Clear add-ons
     activeAddons.forEach(id => {
       document.getElementById(`row-${id}`).classList.remove('active');
@@ -808,9 +826,8 @@
     doc.text('AMOUNT', W - M - 8, y, { align: 'right' });
     y += 14;
 
-    // Basic Lawn Care
-    pdfServiceRow(doc, 'Basic Lawn Care Service', Q.lawnCare, M, y, W);
-    y += 22;
+    // Basic Lawn Care (only if selected)
+    if (Q.lawnCareSelected) { pdfServiceRow(doc, 'Basic Lawn Care Service', Q.lawnCare, M, y, W); y += 22; }
 
     // Add-ons
     Q.addonLines.forEach(a => {
