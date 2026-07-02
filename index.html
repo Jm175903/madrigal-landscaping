@@ -45,7 +45,6 @@
       padding-bottom: env(safe-area-inset-bottom);
     }
 
-    /* ── Header ── */
     header {
       background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
       color: var(--white);
@@ -71,14 +70,12 @@
     .header-text h1 { font-size: 1.3rem; font-weight: 700; }
     .header-text p  { font-size: 0.78rem; opacity: 0.72; margin-top: 1px; }
 
-    /* ── Layout ── */
     main {
       max-width: 640px;
       margin: 0 auto;
       padding: 18px 14px 48px;
     }
 
-    /* ── Card ── */
     .card {
       background: var(--white);
       border-radius: var(--radius);
@@ -98,7 +95,6 @@
       border-bottom: 2px solid var(--green-pale);
     }
 
-    /* ── Input grid ── */
     .input-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -145,7 +141,6 @@
     .error-msg  { color: var(--red); font-size: 0.72rem; display: none; }
     .error-msg.visible { display: block; }
 
-    /* ── Services list ── */
     .service-list { display: flex; flex-direction: column; gap: 1px; }
 
     .service-row {
@@ -164,12 +159,6 @@
     .service-row:hover  { background: var(--gray-50); }
     .service-row.active { background: var(--green-pale); }
 
-    /* The "base" row is not clickable */
-    .service-row.base {
-      background: var(--green-pale);
-      cursor: default;
-    }
-
     .service-check {
       width: 24px; height: 24px; min-width: 24px;
       border-radius: 6px;
@@ -180,7 +169,6 @@
       background: var(--white);
     }
 
-    .service-row.base .service-check,
     .service-row.active .service-check {
       background: var(--green-mid);
       border-color: var(--green-mid);
@@ -196,8 +184,6 @@
       color: var(--text);
     }
 
-    .service-row.base .service-name { color: var(--green-dark); }
-
     .service-price {
       font-size: 0.88rem;
       font-weight: 700;
@@ -205,9 +191,6 @@
       white-space: nowrap;
     }
 
-    .service-row.base .service-price { color: var(--gray-400); font-weight: 400; font-style: italic; }
-
-    /* ── Buttons ── */
     .btn {
       display: inline-flex;
       align-items: center; justify-content: center;
@@ -241,19 +224,12 @@
       box-shadow: 0 3px 12px rgba(200,168,85,0.35);
     }
 
-    .btn-ghost {
-      background: rgba(255,255,255,0.14);
-      color: var(--white);
-      border: 2px solid rgba(255,255,255,0.4);
-    }
-
     .btn-outline {
       background: transparent;
       color: var(--green-mid);
       border: 2px solid var(--green-mid);
     }
 
-    /* ── Result box ── */
     .result-box {
       display: none;
       background: var(--white);
@@ -288,7 +264,6 @@
 
     .result-body { padding: 0 18px; }
 
-    /* Services breakdown rows */
     .line-item {
       display: flex;
       justify-content: space-between;
@@ -299,7 +274,6 @@
     }
 
     .line-item:last-child { border-bottom: none; }
-
     .line-item .li-name  { color: var(--gray-700); }
     .line-item .li-price { font-weight: 600; color: var(--text); }
 
@@ -334,7 +308,6 @@
       border-top: 1px solid var(--gray-100);
     }
 
-    /* ── Modal ── */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -398,7 +371,6 @@
     }
 
     .modal-close:hover { opacity: 1; }
-
     .modal-body { padding: 20px; }
 
     .modal-grid {
@@ -441,7 +413,6 @@
 
 <main>
 
-  <!-- Job Details -->
   <div class="card">
     <div class="card-title">Job Details</div>
     <div class="input-grid">
@@ -460,54 +431,42 @@
     </div>
   </div>
 
-  <!-- Services -->
   <div class="card">
     <div class="card-title">Services</div>
     <div class="service-list">
 
-      <!-- Base service — selected by default, but toggleable -->
       <div class="service-row active" id="row-lawn" onclick="toggleLawnCare()">
         <div class="service-check" id="chk-lawn">✓</div>
         <div class="service-name">Basic Lawn Care Service</div>
         <div class="service-price">Calculated</div>
       </div>
 
-      <!-- Add-ons -->
       <div class="service-row" id="row-fertilization" onclick="toggleService('fertilization')">
-        <div class="service-check" id="chk-fertilization">
-          <input type="checkbox" id="fertilization" />
-        </div>
+        <div class="service-check" id="chk-fertilization"></div>
         <div class="service-name">Lawn Fertilization</div>
         <div class="service-price">+$40.00</div>
       </div>
 
       <div class="service-row" id="row-leaf" onclick="toggleService('leaf')">
-        <div class="service-check" id="chk-leaf">
-          <input type="checkbox" id="leaf" />
-        </div>
+        <div class="service-check" id="chk-leaf"></div>
         <div class="service-name">Leaf Cleaning</div>
         <div class="service-price">+$20.00</div>
       </div>
 
       <div class="service-row" id="row-snow" onclick="toggleService('snow')">
-        <div class="service-check" id="chk-snow">
-          <input type="checkbox" id="snow" />
-        </div>
+        <div class="service-check" id="chk-snow"></div>
         <div class="service-name">Snow Removal</div>
         <div class="service-price">+$20.00</div>
       </div>
 
       <div class="service-row" id="row-weeding" onclick="toggleService('weeding')">
-        <div class="service-check" id="chk-weeding">
-          <input type="checkbox" id="weeding" />
-        </div>
+        <div class="service-check" id="chk-weeding"></div>
         <div class="service-name">Small Garden Weeding Service</div>
         <div class="service-price">+$20.00</div>
       </div>
 
       <div class="service-row active" id="row-servicefee" onclick="toggleService('servicefee')">
-        <div class="service-check" id="chk-servicefee">✓<input type="checkbox" id="servicefee" />
-        </div>
+        <div class="service-check" id="chk-servicefee">✓</div>
         <div class="service-name">Single-Service Fee</div>
         <div class="service-price">+$10.00</div>
       </div>
@@ -516,7 +475,6 @@
     <button class="btn btn-primary" onclick="calculateQuote()">Calculate Quote</button>
   </div>
 
-  <!-- Result -->
   <div class="result-box" id="resultBox">
     <div class="result-header">
       <div class="result-header-label">Quote Summary</div>
@@ -533,7 +491,6 @@
 
 <footer>© 2026 Madrigal Landscaping · Utah's Lawn Care · All rights reserved</footer>
 
-<!-- Modal: Client Info -->
 <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-handle"></div>
@@ -583,13 +540,13 @@
 </div>
 
 <script>
-  const TAX_RATE = 0.0685; // Utah combined sales tax (approx.)
+  const TAX_RATE = 0.0685;
   const ADDONS = {
     fertilization: { label: 'Lawn Fertilization', price: 40 },
     leaf:          { label: 'Leaf Cleaning',       price: 20 },
     snow:          { label: 'Snow Removal',        price: 20 },
     weeding:       { label: 'Small Garden Weeding Service', price: 20 },
-    servicefee:    { label: 'Single-Service Fee',   price: 10 },
+    servicefee:    { label: 'Single-Service Fee',  price: 10 },
   };
 
   let quoteData        = null;
@@ -602,7 +559,6 @@
     document.getElementById('chk-lawn').textContent = lawnCareSelected ? '✓' : '';
   }
 
-  // ── Toggle add-on ─────────────────────────────────
   function toggleService(id) {
     if (activeAddons.has(id)) {
       activeAddons.delete(id);
@@ -615,11 +571,9 @@
     }
   }
 
-  // ── Calculate ──────────────────────────────────────
   function calculateQuote() {
     const distEl  = document.getElementById('distance');
     const hoursEl = document.getElementById('jobHours');
-
     const rawMiles = parseFloat(distEl.value);
     const rawHours = parseFloat(hoursEl.value);
     let valid = true;
@@ -644,13 +598,11 @@
 
     if (!valid) return;
 
-    // Require at least one service
     if (!lawnCareSelected && activeAddons.size === 0) {
       alert('Please select at least one service.');
       return;
     }
 
-    // Lawn care (only when selected)
     let lawnCare = 0;
     if (lawnCareSelected) {
       const miles      = Math.max(rawMiles, 15);
@@ -660,7 +612,6 @@
       lawnCare         = Math.max(withMarkup, 45);
     }
 
-    // Add-ons
     const addonLines = [];
     let addonTotal = 0;
     activeAddons.forEach(id => {
@@ -668,9 +619,9 @@
       addonTotal += ADDONS[id].price;
     });
 
-    const subtotal  = lawnCare + addonTotal;
-    const tax       = subtotal * TAX_RATE;
-    const total     = subtotal + tax;
+    const subtotal = lawnCare + addonTotal;
+    const tax      = subtotal * TAX_RATE;
+    const total    = subtotal + tax;
 
     quoteData = {
       lawnCareSelected, lawnCare, addonLines, subtotal, tax, total,
@@ -684,7 +635,6 @@
     box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
-  // ── Render result body ─────────────────────────────
   function renderResult(lawnCareSelected, lawnCare, addonLines, subtotal, tax, total) {
     const body = document.getElementById('resultBody');
     let html = '';
@@ -692,16 +642,10 @@
     if (lawnCareSelected) html += lineItem('Basic Lawn Care Service', lawnCare);
     addonLines.forEach(a => { html += lineItem(a.label, a.price); });
 
-    // Subtotal only when multiple lines exist
     const lineCount = (lawnCareSelected ? 1 : 0) + addonLines.length;
-    if (lineCount > 1) {
-      html += lineItem('Subtotal', subtotal, 'line-subtotal');
-    }
+    if (lineCount > 1) html += lineItem('Subtotal', subtotal, 'line-subtotal');
 
-    // Tax
-    html += lineItem(`Utah Sales Tax (6.85%)`, tax, 'line-tax');
-
-    // Total
+    html += lineItem('Utah Sales Tax (6.85%)', tax, 'line-tax');
     html += lineItem('TOTAL', total, 'line-total');
 
     body.innerHTML = html;
@@ -714,17 +658,14 @@
     </div>`;
   }
 
-  // ── Reset ──────────────────────────────────────────
   function resetForm() {
-    document.getElementById('distance').value  = '';
-    document.getElementById('jobHours').value  = '';
+    document.getElementById('distance').value = '';
+    document.getElementById('jobHours').value = '';
     document.getElementById('resultBox').classList.remove('visible');
     quoteData = null;
-    // Reset lawn care to selected
     lawnCareSelected = true;
     document.getElementById('row-lawn').classList.add('active');
     document.getElementById('chk-lawn').textContent = '✓';
-    // Clear add-ons, then restore defaults
     activeAddons.forEach(id => {
       document.getElementById(`row-${id}`).classList.remove('active');
       document.getElementById(`chk-${id}`).textContent = '';
@@ -736,7 +677,6 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // ── Modal ──────────────────────────────────────────
   function openModal() {
     document.getElementById('modalOverlay').classList.add('open');
     setTimeout(() => document.getElementById('firstName').focus(), 300);
@@ -752,7 +692,6 @@
 
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-  // ── PDF Export ─────────────────────────────────────
   function exportPDF() {
     const fields = ['firstName','lastName','phone','email','address'];
     let valid = true;
@@ -766,7 +705,6 @@
       }
     });
     if (!valid) return;
-
     generatePDF({
       firstName: document.getElementById('firstName').value.trim(),
       lastName:  document.getElementById('lastName').value.trim(),
@@ -777,7 +715,6 @@
     closeModal();
   }
 
-  // ── PDF Generation ─────────────────────────────────
   function generatePDF(client) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'pt', format: 'letter' });
@@ -785,49 +722,36 @@
     const H = doc.internal.pageSize.getHeight();
     const M = 52;
     const Q = quoteData;
-    let y   = 0;
+    let y = 0;
 
-    // ── Header ──
     doc.setFillColor(26, 61, 26);
     doc.rect(0, 0, W, 100, 'F');
-
     doc.setTextColor(200, 168, 85);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(24);
     doc.text('Madrigal Landscaping', M, 46);
-
     doc.setTextColor(255, 255, 255);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(10);
     doc.text("Utah's Lawn Care", M, 64);
-
-    // Quote badge
     doc.setFillColor(200, 168, 85);
     doc.roundedRect(W - M - 82, 26, 82, 28, 6, 6, 'F');
     doc.setTextColor(26, 61, 26);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(13);
     doc.text('QUOTE', W - M - 41, 45, { align: 'center' });
-
     doc.setTextColor(255, 255, 255);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     doc.text(`Date: ${Q.date}`, W - M, 70, { align: 'right' });
 
     y = 128;
-
-    // ── Client Information ──
     pdfSection(doc, 'Client Information', M, y, W);
     y += 26;
 
-    const clientRows = [
-      ['Name',    `${client.firstName} ${client.lastName}`],
-      ['Phone',   client.phone],
-      ['Email',   client.email],
-      ['Address', client.address],
-    ];
-
-    clientRows.forEach(([k, v]) => {
+    [['Name', `${client.firstName} ${client.lastName}`],
+     ['Phone', client.phone], ['Email', client.email], ['Address', client.address]
+    ].forEach(([k, v]) => {
       doc.setFont('helvetica', 'bold').setFontSize(10).setTextColor(80, 80, 80);
       doc.text(k + ':', M + 4, y);
       doc.setFont('helvetica', 'normal').setTextColor(30, 30, 30);
@@ -836,12 +760,9 @@
     });
 
     y += 20;
-
-    // ── Services ──
     pdfSection(doc, 'Services', M, y, W);
     y += 26;
 
-    // Table header
     doc.setFillColor(232, 245, 232);
     doc.rect(M, y - 14, W - M * 2, 20, 'F');
     doc.setFont('helvetica', 'bold').setFontSize(9).setTextColor(26, 61, 26);
@@ -849,22 +770,12 @@
     doc.text('AMOUNT', W - M - 8, y, { align: 'right' });
     y += 14;
 
-    // Basic Lawn Care (only if selected)
     if (Q.lawnCareSelected) { pdfServiceRow(doc, 'Basic Lawn Care Service', Q.lawnCare, M, y, W); y += 22; }
-
-    // Add-ons
-    Q.addonLines.forEach(a => {
-      pdfServiceRow(doc, a.label, a.price, M, y, W);
-      y += 22;
-    });
+    Q.addonLines.forEach(a => { pdfServiceRow(doc, a.label, a.price, M, y, W); y += 22; });
 
     y += 6;
-
-    // ── Totals ──
     const totalsX = W - M - 200;
-    const totalsW = 200;
 
-    // Subtotal (if add-ons)
     if (Q.addonLines.length > 0) {
       doc.setDrawColor(200, 220, 200);
       doc.line(totalsX, y, W - M, y);
@@ -876,13 +787,11 @@
       y += 18;
     }
 
-    // Tax
     doc.setFont('helvetica', 'normal').setFontSize(9).setTextColor(100, 100, 100);
     doc.text('Utah Sales Tax (6.85%)', totalsX, y);
     doc.text(fmt(Q.tax), W - M, y, { align: 'right' });
     y += 16;
 
-    // Total box
     y += 4;
     doc.setFillColor(26, 61, 26);
     doc.roundedRect(M, y, W - M * 2, 50, 8, 8, 'F');
@@ -892,14 +801,12 @@
     doc.text(fmt(Q.total), W - M - 20, y + 34, { align: 'right' });
     y += 70;
 
-    // ── Disclaimer ──
     doc.setFillColor(245, 250, 245);
     doc.roundedRect(M, y, W - M * 2, 44, 6, 6, 'F');
     doc.setTextColor(80, 120, 80).setFont('helvetica', 'italic').setFontSize(8.5);
     doc.text('This quote is an estimate. Final pricing may vary based on site conditions.', W / 2, y + 15, { align: 'center' });
     doc.text('Tax rate shown is approximate. Contact Madrigal Landscaping to confirm.', W / 2, y + 29, { align: 'center' });
 
-    // ── Page footer ──
     doc.setFillColor(26, 61, 26).rect(0, H - 32, W, 32, 'F');
     doc.setTextColor(200, 168, 85).setFont('helvetica', 'normal').setFontSize(8.5);
     doc.text('© 2026 Madrigal Landscaping  ·  Utah\'s Lawn Care  ·  All Rights Reserved', W / 2, H - 12, { align: 'center' });
@@ -907,7 +814,6 @@
     const fileName = `Madrigal_Quote_${client.lastName}_${Q.date.replace(/,?\s+/g, '_')}.pdf`;
     const blob = doc.output('blob');
 
-    // Web Share API — shows native share sheet on iOS/Android (Mail, AirDrop, Save to Files…)
     if (navigator.canShare && navigator.canShare({ files: [new File([blob], fileName, { type: 'application/pdf' })] })) {
       navigator.share({
         title: 'Madrigal Landscaping Quote',
@@ -921,9 +827,7 @@
   function triggerDownload(blob, fileName) {
     const url = URL.createObjectURL(blob);
     const a   = document.createElement('a');
-    a.href     = url;
-    a.download = fileName;
-    a.target   = '_blank';
+    a.href = url; a.download = fileName; a.target = '_blank';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
