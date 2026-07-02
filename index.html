@@ -494,6 +494,14 @@
         <div class="service-price">+$20.00</div>
       </div>
 
+      <div class="service-row" id="row-weeding" onclick="toggleService('weeding')">
+        <div class="service-check" id="chk-weeding">
+          <input type="checkbox" id="weeding" />
+        </div>
+        <div class="service-name">Small Garden Weeding Service</div>
+        <div class="service-price">+$20.00</div>
+      </div>
+
       <div class="service-row active" id="row-servicefee" onclick="toggleService('servicefee')">
         <div class="service-check" id="chk-servicefee">✓<input type="checkbox" id="servicefee" />
         </div>
@@ -577,6 +585,7 @@
     fertilization: { label: 'Lawn Fertilization', price: 40 },
     leaf:          { label: 'Leaf Cleaning',       price: 20 },
     snow:          { label: 'Snow Removal',        price: 20 },
+    weeding:       { label: 'Small Garden Weeding Service', price: 20 },
     servicefee:    { label: 'Single-Service Fee',   price: 10 },
   };
 
